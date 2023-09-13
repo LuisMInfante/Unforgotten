@@ -1,0 +1,883 @@
+{
+	"folders": [
+		{
+			"name": "Unforgotten",
+			"path": "."
+		},
+		{
+			"name": "UE5",
+			"path": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+		}
+	],
+	"settings": {
+		"typescript.tsc.autoDetect": "off",
+		"npm.autoDetect": "off"
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools",
+			"ms-dotnettools.csharp"
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Unforgotten Win64 Debug Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Debug Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten Win64 Debug Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Debug Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 DebugGame Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 DebugGame Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten Win64 DebugGame Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 DebugGame Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Development Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Development Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten Win64 Development Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Development Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Test Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Test",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Test Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Test",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten Win64 Test Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Test Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Test",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Shipping Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Shipping",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Shipping Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Shipping",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten Win64 Shipping Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten Win64 Shipping Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"Win64",
+					"Shipping",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Debug Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Debug Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten IOS Debug Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Debug Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS DebugGame Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS DebugGame Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten IOS DebugGame Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS DebugGame Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Development Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Development Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten IOS Development Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Development Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Test Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Test",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Test Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Test",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten IOS Test Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Test Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Test",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Shipping Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Shipping",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Shipping Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Shipping",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"Unforgotten IOS Shipping Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "Unforgotten IOS Shipping Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"Unforgotten",
+					"IOS",
+					"Shipping",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 Debug Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 Debug Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"UnforgottenEditor Win64 Debug Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 Debug Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"Debug",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 DebugGame Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 DebugGame Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"UnforgottenEditor Win64 DebugGame Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 DebugGame Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"DebugGame",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 Development Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 Development Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"UnforgottenEditor Win64 Development Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"label": "UnforgottenEditor Win64 Development Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"UnforgottenEditor",
+					"Win64",
+					"Development",
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			}
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Launch Unforgotten (Debug)",
+				"request": "launch",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
+				"preLaunchTask": "Unforgotten Win64 Debug Build",
+				"args": [
+				],
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3",
+				"stopAtEntry": false,
+				"console": "externalTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"name": "Launch Unforgotten (DebugGame)",
+				"request": "launch",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
+				"preLaunchTask": "Unforgotten Win64 DebugGame Build",
+				"args": [
+				],
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3",
+				"stopAtEntry": false,
+				"console": "externalTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"name": "Launch Unforgotten (Development)",
+				"request": "launch",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Binaries\\Win64\\UnrealGame.exe",
+				"preLaunchTask": "Unforgotten Win64 Development Build",
+				"args": [
+				],
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3",
+				"stopAtEntry": false,
+				"console": "externalTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"name": "Launch Unforgotten (Test)",
+				"request": "launch",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
+				"preLaunchTask": "Unforgotten Win64 Test Build",
+				"args": [
+				],
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3",
+				"stopAtEntry": false,
+				"console": "externalTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"name": "Launch Unforgotten (Shipping)",
+				"request": "launch",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
+				"preLaunchTask": "Unforgotten Win64 Shipping Build",
+				"args": [
+				],
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3",
+				"stopAtEntry": false,
+				"console": "externalTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"name": "Launch UnforgottenEditor (Debug)",
+				"request": "launch",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-Debug.exe",
+				"preLaunchTask": "UnforgottenEditor Win64 Debug Build",
+				"args": [
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject"
+				],
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3",
+				"stopAtEntry": false,
+				"console": "externalTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"name": "Launch UnforgottenEditor (DebugGame)",
+				"request": "launch",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-DebugGame.exe",
+				"preLaunchTask": "UnforgottenEditor Win64 DebugGame Build",
+				"args": [
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject"
+				],
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3",
+				"stopAtEntry": false,
+				"console": "externalTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"name": "Launch UnforgottenEditor (Development)",
+				"request": "launch",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+				"preLaunchTask": "UnforgottenEditor Win64 Development Build",
+				"args": [
+					"G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject"
+				],
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3",
+				"stopAtEntry": false,
+				"console": "externalTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+				}
+			},
+			{
+				"name": "Generate Project Files",
+				"type": "coreclr",
+				"request": "launch",
+				"preLaunchTask": "UnrealBuildTool Win64 Development Build",
+				"program": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3\\Engine\\Build\\BatchFiles\\RunUBT.bat",
+				"args": [
+					"-projectfiles",
+					"-vscode",
+					"-project=G:\\Gaming Apps\\Unreal Engine\\Projects\\Unforgotten\\Unforgotten.uproject",
+					"-game",
+					"-engine",
+					"-dotnet"
+				],
+				"console": "externalTerminal",
+				"stopAtEntry": false,
+				"cwd": "G:\\Gaming Apps\\Unreal Engine\\UE_5.3"
+			}
+		]
+	}
+}
