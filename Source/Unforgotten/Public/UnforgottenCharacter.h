@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Logging/LogMacros.h"
 #include "UnforgottenCharacter.generated.h"
 
@@ -12,6 +13,7 @@ class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class UCharacterMovementComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -53,6 +55,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Jump Action */
 	void Jump();
 
 	/** Jump Event */
@@ -60,6 +63,12 @@ public:
 
 	/** StopJumping Event */
 	void StopJumping();
+
+	/** Jump Peak Event */
+	void NotifyJumpApex();
+
+	/** Falling Event */
+	void Falling();
 
 	/** Landing Function */
 	void Landed(const FHitResult& Hit);

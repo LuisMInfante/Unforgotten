@@ -116,12 +116,23 @@ void AUnforgottenCharacter::Jump()
 
 void AUnforgottenCharacter::OnJumped_Implementation()
 {
+	GetCharacterMovement()->bNotifyApex = true; // Enables the NotifyJumpApex function to fire, gets reset in the method
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player jumped!"));
 }
 
 void AUnforgottenCharacter::StopJumping()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player let go of jump!"));
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, TEXT("Player let go of jump!"));
+}
+
+void AUnforgottenCharacter::NotifyJumpApex()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("Player jump peak reached, now falling!"));
+}
+
+void AUnforgottenCharacter::Falling()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("Player entered falling state!"));
 }
 
 void AUnforgottenCharacter::Landed(const FHitResult & Hit)
