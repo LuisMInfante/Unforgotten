@@ -110,27 +110,24 @@ void AUnforgottenCharacter::Look(const FInputActionValue& Value)
 void AUnforgottenCharacter::Jump()
 {
 	ACharacter::Jump();
-	OnJump();
-}
-
-void AUnforgottenCharacter::StopJumping()
-{
-	ACharacter::StopJumping();
-	OnStopJumping();
 }
 
 //////////////////////////////////////////////////////////////////////////// Events
 
-void AUnforgottenCharacter::OnJump_Implementation()
+void AUnforgottenCharacter::OnJumped_Implementation()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player jumped!"));
 }
 
-void AUnforgottenCharacter::OnStopJumping_Implementation()
+void AUnforgottenCharacter::StopJumping()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player let go of jump!"));
 }
 
+void AUnforgottenCharacter::Landed(const FHitResult & Hit)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player Landed!"));
+}
 
 //////////////////////////////////////////////////////////////////////////// Getter / Setter
 
