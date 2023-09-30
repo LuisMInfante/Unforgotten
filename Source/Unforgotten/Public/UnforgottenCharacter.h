@@ -53,6 +53,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Jump Event */
+	UFUNCTION(BlueprintNativeEvent, Category="Movement")
+	void OnJump();
+
+	/** Landing Event */
+	UFUNCTION(BlueprintNativeEvent, Category="Movement")
+	void OnStopJumping();
+
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
@@ -71,6 +79,12 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	/** Called for jumping input */
+	void Jump();
+
+	/** Called for stopping jump input */
+	void StopJumping();
 
 protected:
 	// APawn interface

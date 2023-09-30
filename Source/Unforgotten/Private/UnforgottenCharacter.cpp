@@ -65,8 +65,8 @@ void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AUnforgottenCharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AUnforgottenCharacter::StopJumping);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::Move);
@@ -106,6 +106,33 @@ void AUnforgottenCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
+
+void AUnforgottenCharacter::Jump()
+{
+	ACharacter::Jump();
+	OnJump();
+}
+
+void AUnforgottenCharacter::StopJumping()
+{
+	ACharacter::StopJumping();
+	OnStopJumping();
+}
+
+//////////////////////////////////////////////////////////////////////////// Events
+
+void AUnforgottenCharacter::OnJump_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player jumped!"));
+}
+
+void AUnforgottenCharacter::OnStopJumping_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player let go of jump!"));
+}
+
+
+//////////////////////////////////////////////////////////////////////////// Getter / Setter
 
 void AUnforgottenCharacter::SetHasRifle(bool bNewHasRifle)
 {
