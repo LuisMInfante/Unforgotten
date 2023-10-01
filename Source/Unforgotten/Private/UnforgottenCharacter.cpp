@@ -91,6 +91,10 @@ void AUnforgottenCharacter::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
+
+		// const FString s = FString("F: {0}, R: {1}");
+		// const FString s_f = FString::Format(*s, {MovementVector.Y, MovementVector.X});
+		GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("F: %f, R: %f"), MovementVector.Y, MovementVector.X));
 	}
 }
 
@@ -117,27 +121,27 @@ void AUnforgottenCharacter::Jump()
 void AUnforgottenCharacter::OnJumped_Implementation()
 {
 	GetCharacterMovement()->bNotifyApex = true; // Enables the NotifyJumpApex function to fire, gets reset in the method
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player jumped!"));
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, TEXT("Player jumped!"));
 }
 
 void AUnforgottenCharacter::StopJumping()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, TEXT("Player let go of jump!"));
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Blue, TEXT("Player let go of jump!"));
 }
 
 void AUnforgottenCharacter::NotifyJumpApex()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("Player jump peak reached, now falling!"));
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Yellow, TEXT("Player jump peak reached, now falling!"));
 }
 
 void AUnforgottenCharacter::Falling()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("Player entered falling state!"));
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Yellow, TEXT("Player entered falling state!"));
 }
 
 void AUnforgottenCharacter::Landed(const FHitResult & Hit)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Player Landed!"));
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, TEXT("Player Landed!"));
 }
 
 //////////////////////////////////////////////////////////////////////////// Getter / Setter
