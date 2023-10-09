@@ -82,7 +82,7 @@ public:
 	void FireRays(FVector Direction);
 
 	/** Handle wall collision Event */
-	void HandleWallCollision(const FHitResult& HitResult);
+	void HandleWallCollision(bool HeadHit, bool BodyHit, bool FeetHit);
 
 
 	/** Wall Slide Event */

@@ -140,8 +140,8 @@ void AUnforgottenCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other
 
 	DrawDebugLine(GetWorld(), PlayerPosition, HitLocation, FColor::Blue, true, 1.0f);
 	// DrawDebugLine(GetWorld(), PlayerPosition, PlayerPosition + (Direction * 200), FColor::Yellow, true, 1.0f);
-
-	FireRays(Direction);
+	if(GetCharacterMovement()->Velocity.Z < 0) // Determine if player is descending
+		FireRays(Direction);
 
     // Check if the character hit a wall (you can define your wall conditions here)
     // if (/* Your wall detection conditions */)
@@ -163,51 +163,32 @@ void AUnforgottenCharacter::FireRays(FVector Direction)
 
     FHitResult HitResult;
 
-    // Perform ray tracing from the head
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, HeadLocation, HeadLocation + Direction * TraceDistance, ECC_Visibility))
-    {
-        // Handle wall collision for the head ray
-        HandleWallCollision(HitResult);
-		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Player HEAD^"));
-    }
+	// Perform ray tracing
+	bool HeadHit = GetWorld()->LineTraceSingleByChannel(HitResult, HeadLocation, HeadLocation + Direction * TraceDistance, ECC_Visibility);
+	bool BodyHit = GetWorld()->LineTraceSingleByChannel(HitResult, CenterLocation, CenterLocation + Direction * TraceDistance, ECC_Visibility);
+	bool FeetHit = GetWorld()->LineTraceSingleByChannel(HitResult, FeetLocation, FeetLocation + Direction * TraceDistance, ECC_Visibility);
 
-    // Perform ray tracing from the center
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, CenterLocation, CenterLocation + Direction * TraceDistance, ECC_Visibility))
-    {
-        // Handle wall collision for the center ray
-        HandleWallCollision(HitResult);
-		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Player CENTER^"));
-    }
-
-    // Perform ray tracing from the feet
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, FeetLocation, FeetLocation + Direction * TraceDistance, ECC_Visibility))
-    {
-        // Handle wall collision for the feet ray
-        HandleWallCollision(HitResult);
-		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Player FEET^"));
-    }
+	HandleWallCollision(HeadHit, BodyHit, FeetHit);
 }
 
-void AUnforgottenCharacter::HandleWallCollision(const FHitResult& HitResult)
+void AUnforgottenCharacter::HandleWallCollision(bool HeadHit, bool BodyHit, bool FeetHit)
 {
-    // Handle wall collision here
-    // You can access information about the hit, such as HitResult.ImpactPoint and HitResult.ImpactNormal
-	// Check if the hit result is valid and there was a hit
-    if (HitResult.bBlockingHit)
-    {
-        // Get the impact point from the hit result
-        FVector ImpactPoint = HitResult.ImpactPoint;
-
-        // Set the debug drawing parameters (color, size, duration)
-        FColor DebugColor = FColor::Red;
-        float DebugSize = 10.0f; // Adjust the size as needed
-        float DebugDuration = 5.0f; // Adjust the duration as needed
-
-        // Draw the debug point at the impact point
-		DrawDebugPoint(GetWorld(), ImpactPoint, 5, DebugColor, true, 1.0f);
-		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, FString::Printf(TEXT("Distance: %f"), HitResult.Distance));
-		
-    }
+	if(!bIsWallSliding)
+	{
+		if(HeadHit && BodyHit && FeetHit)
+		{
+			bIsWallSliding = true;
+			GetCharacterMovement()->GravityScale = 0.5f;
+		}
+	}
+	else
+	{
+		if(!HeadHit && !BodyHit && !FeetHit)
+		{
+			bIsWallSliding = false;
+			GetCharacterMovement()->GravityScale = 1.0f;
+		}
+	}
 }
 
 void AUnforgottenCharacter::WallSlide()
@@ -278,6 +259,12 @@ void AUnforgottenCharacter::Falling()
 void AUnforgottenCharacter::Landed(const FHitResult & Hit)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, TEXT("Player Landed!"));
+
+	if(bIsWallSliding)
+	{
+		bIsWallSliding = false;
+		GetCharacterMovement()->GravityScale = 1.0f;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Getter / Setter
