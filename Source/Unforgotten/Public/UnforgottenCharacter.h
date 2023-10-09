@@ -73,6 +73,25 @@ public:
 	/** Landing Function */
 	void Landed(const FHitResult& Hit);
 
+	/** On collision event*/
+	UFUNCTION()
+	void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
+					FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit);
+	
+	/** Fires Rays to determines what wall action to do */
+	void FireRays();
+
+	/** Handle wall collision Event */
+	void HandleWallCollision(const FHitResult& HitResult);
+
+
+	/** Wall Slide Event */
+    void WallSlide();
+
+	/** Bool for determining if wall sliding */
+    bool bIsWallSliding;
+    FVector WallNormal;
+
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
@@ -98,6 +117,8 @@ protected:
 	// End of APawn interface
 
 public:
+	/** Call upon every tick */
+	virtual void Tick(float DeltaTime) override;
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/

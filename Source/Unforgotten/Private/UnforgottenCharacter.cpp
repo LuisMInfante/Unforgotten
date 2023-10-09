@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "DrawDebugHelpers.h" // Include this for debugging visualization
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -20,6 +21,9 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 {
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
+
+	// Enable tick every frame
+	PrimaryActorTick.bCanEverTick = true;
 	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
@@ -55,6 +59,19 @@ void AUnforgottenCharacter::BeginPlay()
 		}
 	}
 
+}
+
+// Called every frame
+void AUnforgottenCharacter::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    if (bIsWallSliding)
+    {
+        // Implement wall sliding logic here
+        // Adjust character's movement or apply forces based on WallNormal
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Sliding!"));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -96,6 +113,87 @@ void AUnforgottenCharacter::Move(const FInputActionValue& Value)
 		// const FString s_f = FString::Format(*s, {MovementVector.Y, MovementVector.X});
 		GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("F: %f, R: %f"), MovementVector.Y, MovementVector.X));
 	}
+}
+
+void AUnforgottenCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+    ACharacter::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("NOTIFY HIT: %s"), *Other->GetName()));
+
+	FireRays();
+
+    // Check if the character hit a wall (you can define your wall conditions here)
+    // if (/* Your wall detection conditions */)
+    // {
+    //     // Handle wall collision here
+    //     HandleWallCollision();
+    // }
+}
+
+void AUnforgottenCharacter::FireRays()
+{
+    FVector HeadLocation = GetActorLocation() + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // Head location
+    FVector CenterLocation = GetActorLocation(); // Center location
+    FVector FeetLocation = GetActorLocation() - FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // Feet location
+
+    FVector RayDirection = GetActorForwardVector(); // Ray direction (you can change this to any direction)
+
+	float TraceDistance = 60.0f;
+
+    FHitResult HitResult;
+
+    // Perform ray tracing from the head
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, HeadLocation, HeadLocation + RayDirection * TraceDistance, ECC_Visibility))
+    {
+        // Handle wall collision for the head ray
+        HandleWallCollision(HitResult);
+    }
+
+    // Perform ray tracing from the center
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, CenterLocation, CenterLocation + RayDirection * TraceDistance, ECC_Visibility))
+    {
+        // Handle wall collision for the center ray
+        HandleWallCollision(HitResult);
+    }
+
+    // Perform ray tracing from the feet
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, FeetLocation, FeetLocation + RayDirection * TraceDistance, ECC_Visibility))
+    {
+        // Handle wall collision for the feet ray
+        HandleWallCollision(HitResult);
+    }
+}
+
+void AUnforgottenCharacter::HandleWallCollision(const FHitResult& HitResult)
+{
+    // Handle wall collision here
+    // You can access information about the hit, such as HitResult.ImpactPoint and HitResult.ImpactNormal
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, FString::Printf(TEXT("Distance: %f"), HitResult.Distance));
+}
+
+void AUnforgottenCharacter::WallSlide()
+{
+    // Check for wall collision and initiate wall sliding
+    FVector Start = GetActorLocation();
+    FVector ForwardVector = GetActorForwardVector();
+    FVector End = ((ForwardVector * 100.0f) + Start); // Adjust the distance as needed
+
+    FHitResult HitResult;
+    FCollisionQueryParams CollisionParams;
+    CollisionParams.AddIgnoredActor(this);
+
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
+    {
+        if (HitResult.bBlockingHit)
+        {
+            // Determine the wall's normal vector and set it
+            WallNormal = HitResult.ImpactNormal;
+            bIsWallSliding = true;
+
+            // Apply forces or custom logic for wall sliding here
+        }
+    }
 }
 
 void AUnforgottenCharacter::Look(const FInputActionValue& Value)
