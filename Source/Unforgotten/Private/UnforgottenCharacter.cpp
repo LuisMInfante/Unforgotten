@@ -71,6 +71,9 @@ void AUnforgottenCharacter::Tick(float DeltaTime)
         // Implement wall sliding logic here
         // Adjust character's movement or apply forces based on WallNormal
 		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Sliding!"));
+
+		if(CheckWallDistance())
+			UnmountWall();
     }
 }
 
@@ -141,7 +144,9 @@ void AUnforgottenCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other
 	DrawDebugLine(GetWorld(), PlayerPosition, HitLocation, FColor::Blue, true, 1.0f);
 	// DrawDebugLine(GetWorld(), PlayerPosition, PlayerPosition + (Direction * 200), FColor::Yellow, true, 1.0f);
 	if(GetCharacterMovement()->Velocity.Z < 0) // Determine if player is descending
-		FireRays(Direction);
+	{
+		FireRays(Direction, HitNormal);
+	}
 
     // Check if the character hit a wall (you can define your wall conditions here)
     // if (/* Your wall detection conditions */)
@@ -151,7 +156,7 @@ void AUnforgottenCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other
     // }
 }
 
-void AUnforgottenCharacter::FireRays(FVector Direction)
+void AUnforgottenCharacter::FireRays(FVector Direction, FVector HitNormal)
 {
     FVector HeadLocation = GetActorLocation() + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // Head location
     FVector CenterLocation = GetActorLocation(); // Center location
@@ -159,7 +164,7 @@ void AUnforgottenCharacter::FireRays(FVector Direction)
 
 	Direction.Z = 0.0f; // Ignore vertical velocity
 
-	float TraceDistance = 100.0f;
+	float TraceDistance = GetCapsuleComponent()->GetScaledCapsuleRadius() * 2;
 
     FHitResult HitResult;
 
@@ -168,25 +173,45 @@ void AUnforgottenCharacter::FireRays(FVector Direction)
 	bool BodyHit = GetWorld()->LineTraceSingleByChannel(HitResult, CenterLocation, CenterLocation + Direction * TraceDistance, ECC_Visibility);
 	bool FeetHit = GetWorld()->LineTraceSingleByChannel(HitResult, FeetLocation, FeetLocation + Direction * TraceDistance, ECC_Visibility);
 
-	HandleWallCollision(HeadHit, BodyHit, FeetHit);
+	HandleWallCollision(HitNormal, HitResult, HeadHit, BodyHit, FeetHit);
 }
 
-void AUnforgottenCharacter::HandleWallCollision(bool HeadHit, bool BodyHit, bool FeetHit)
+void AUnforgottenCharacter::MountWall(FVector HitNormal, FHitResult HitResult)
+{
+	bIsWallSliding = true;
+	WallNormal = HitNormal;
+	WallPosition = HitResult.Location;
+	GetCharacterMovement()->GravityScale = 0.5f;
+	Landed(HitResult);
+}
+
+void AUnforgottenCharacter::UnmountWall()
+{
+	bIsWallSliding = false;
+	WallNormal = FVector::ZeroVector;
+	WallPosition = FVector::ZeroVector;
+	GetCharacterMovement()->GravityScale = 1.0f;
+}
+
+bool AUnforgottenCharacter::CheckWallDistance()
+{
+	return FVector::Distance(GetActorLocation(), WallPosition) > GetCapsuleComponent()->GetScaledCapsuleRadius() * 2;
+}
+
+void AUnforgottenCharacter::HandleWallCollision(FVector HitNormal, FHitResult HitResult, bool HeadHit, bool BodyHit, bool FeetHit)
 {
 	if(!bIsWallSliding)
 	{
 		if(HeadHit && BodyHit && FeetHit)
 		{
-			bIsWallSliding = true;
-			GetCharacterMovement()->GravityScale = 0.5f;
+			MountWall(HitNormal, HitResult);
 		}
 	}
 	else
 	{
 		if(!HeadHit && !BodyHit && !FeetHit)
 		{
-			bIsWallSliding = false;
-			GetCharacterMovement()->GravityScale = 1.0f;
+			UnmountWall();
 		}
 	}
 }
@@ -230,7 +255,15 @@ void AUnforgottenCharacter::Look(const FInputActionValue& Value)
 
 void AUnforgottenCharacter::Jump()
 {
-	ACharacter::Jump();
+	if(!bIsWallSliding)
+		ACharacter::Jump();
+	else
+		WallJump();
+}
+
+void AUnforgottenCharacter::WallJump()
+{
+
 }
 
 //////////////////////////////////////////////////////////////////////////// Events
@@ -260,11 +293,7 @@ void AUnforgottenCharacter::Landed(const FHitResult & Hit)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, TEXT("Player Landed!"));
 
-	if(bIsWallSliding)
-	{
-		bIsWallSliding = false;
-		GetCharacterMovement()->GravityScale = 1.0f;
-	}
+	// UnmountWall();
 }
 
 //////////////////////////////////////////////////////////////////////////// Getter / Setter

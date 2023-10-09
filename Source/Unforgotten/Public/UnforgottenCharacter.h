@@ -58,6 +58,9 @@ public:
 	/** Jump Action */
 	void Jump();
 
+	/** Wall ump Action */
+	void WallJump();
+
 	/** Jump Event */
 	void OnJumped_Implementation();
 
@@ -78,12 +81,8 @@ public:
 	void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
 					FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit);
 	
-	/** Fires Rays to determines what wall action to do */
-	void FireRays(FVector Direction);
-
 	/** Handle wall collision Event */
-	void HandleWallCollision(bool HeadHit, bool BodyHit, bool FeetHit);
-
+	void HandleWallCollision(FVector HitNormal, FHitResult HitResult, bool HeadHit, bool BodyHit, bool FeetHit);
 
 	/** Wall Slide Event */
     void WallSlide();
@@ -91,6 +90,7 @@ public:
 	/** Bool for determining if wall sliding */
     bool bIsWallSliding;
     FVector WallNormal;
+	FVector WallPosition;
 
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
@@ -110,6 +110,18 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	/** Fires Rays to determines what wall action to do */
+	void FireRays(FVector Direction, FVector HitNormal);
+
+	/** Mount a wall*/
+	void MountWall(FVector HitNormal, FHitResult HitResult);
+
+	/** Unmount a wall*/
+	void UnmountWall();
+
+	/** Determine if we are still hugging the wall*/
+	bool CheckWallDistance();
 
 protected:
 	// APawn interface
