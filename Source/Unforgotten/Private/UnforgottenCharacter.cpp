@@ -10,7 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
-#include "DrawDebugHelpers.h" // Include this for debugging visualization
+#include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -119,9 +119,29 @@ void AUnforgottenCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other
 {
     ACharacter::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("NOTIFY HIT: %s"), *Other->GetName()));
+	// Get the player's position
+	FVector PlayerPosition = GetActorLocation();
 
-	FireRays();
+	// Get the player's height
+	float PlayerHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * 2.0f;
+
+	if(HitLocation.Z <= (PlayerPosition - FVector(0, 0, PlayerHeight * 0.5f)).Z)
+	{
+		DrawDebugPoint(GetWorld(), HitLocation, 5, FColor::Red, true, 1.0f);
+		return;
+	}
+
+	DrawDebugPoint(GetWorld(), HitLocation, 5, FColor::Green, true, 1.0f);
+
+	//GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("NOTIFY HIT: %s"), *Other->GetName()));
+
+	// Calculate the direction vector
+	FVector Direction = (HitLocation - PlayerPosition).GetSafeNormal();
+
+	DrawDebugLine(GetWorld(), PlayerPosition, HitLocation, FColor::Blue, true, 1.0f);
+	// DrawDebugLine(GetWorld(), PlayerPosition, PlayerPosition + (Direction * 200), FColor::Yellow, true, 1.0f);
+
+	FireRays(Direction);
 
     // Check if the character hit a wall (you can define your wall conditions here)
     // if (/* Your wall detection conditions */)
@@ -131,37 +151,40 @@ void AUnforgottenCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other
     // }
 }
 
-void AUnforgottenCharacter::FireRays()
+void AUnforgottenCharacter::FireRays(FVector Direction)
 {
     FVector HeadLocation = GetActorLocation() + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // Head location
     FVector CenterLocation = GetActorLocation(); // Center location
     FVector FeetLocation = GetActorLocation() - FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // Feet location
 
-    FVector RayDirection = GetActorForwardVector(); // Ray direction (you can change this to any direction)
+	Direction.Z = 0.0f; // Ignore vertical velocity
 
-	float TraceDistance = 60.0f;
+	float TraceDistance = 100.0f;
 
     FHitResult HitResult;
 
     // Perform ray tracing from the head
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, HeadLocation, HeadLocation + RayDirection * TraceDistance, ECC_Visibility))
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, HeadLocation, HeadLocation + Direction * TraceDistance, ECC_Visibility))
     {
         // Handle wall collision for the head ray
         HandleWallCollision(HitResult);
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Player HEAD^"));
     }
 
     // Perform ray tracing from the center
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, CenterLocation, CenterLocation + RayDirection * TraceDistance, ECC_Visibility))
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, CenterLocation, CenterLocation + Direction * TraceDistance, ECC_Visibility))
     {
         // Handle wall collision for the center ray
         HandleWallCollision(HitResult);
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Player CENTER^"));
     }
 
     // Perform ray tracing from the feet
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, FeetLocation, FeetLocation + RayDirection * TraceDistance, ECC_Visibility))
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, FeetLocation, FeetLocation + Direction * TraceDistance, ECC_Visibility))
     {
         // Handle wall collision for the feet ray
         HandleWallCollision(HitResult);
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Player FEET^"));
     }
 }
 
@@ -169,7 +192,22 @@ void AUnforgottenCharacter::HandleWallCollision(const FHitResult& HitResult)
 {
     // Handle wall collision here
     // You can access information about the hit, such as HitResult.ImpactPoint and HitResult.ImpactNormal
-	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, FString::Printf(TEXT("Distance: %f"), HitResult.Distance));
+	// Check if the hit result is valid and there was a hit
+    if (HitResult.bBlockingHit)
+    {
+        // Get the impact point from the hit result
+        FVector ImpactPoint = HitResult.ImpactPoint;
+
+        // Set the debug drawing parameters (color, size, duration)
+        FColor DebugColor = FColor::Red;
+        float DebugSize = 10.0f; // Adjust the size as needed
+        float DebugDuration = 5.0f; // Adjust the duration as needed
+
+        // Draw the debug point at the impact point
+		DrawDebugPoint(GetWorld(), ImpactPoint, 5, DebugColor, true, 1.0f);
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, FString::Printf(TEXT("Distance: %f"), HitResult.Distance));
+		
+    }
 }
 
 void AUnforgottenCharacter::WallSlide()

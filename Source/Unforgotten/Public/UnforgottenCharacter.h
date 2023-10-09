@@ -79,7 +79,7 @@ public:
 					FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit);
 	
 	/** Fires Rays to determines what wall action to do */
-	void FireRays();
+	void FireRays(FVector Direction);
 
 	/** Handle wall collision Event */
 	void HandleWallCollision(const FHitResult& HitResult);
