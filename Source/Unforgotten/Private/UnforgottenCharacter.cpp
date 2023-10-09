@@ -270,7 +270,7 @@ void AUnforgottenCharacter::Jump()
 
 	if(bIsWallSliding)
 	{
-		GetCharacterMovement()->Velocity + (WallNormal * 5) / GetCharacterMovement()->GravityScale;
+		GetCharacterMovement()->Velocity += (WallNormal * GetCharacterMovement()->JumpZVelocity) / GetCharacterMovement()->GravityScale;
 		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, TEXT("Player wall jumped!"));
 	}
 }
