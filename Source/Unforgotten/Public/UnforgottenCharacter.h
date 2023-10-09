@@ -58,9 +58,6 @@ public:
 	/** Jump Action */
 	void Jump();
 
-	/** Wall ump Action */
-	void WallJump();
-
 	/** Jump Event */
 	void OnJumped_Implementation();
 

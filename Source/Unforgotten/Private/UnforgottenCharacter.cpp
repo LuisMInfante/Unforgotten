@@ -22,16 +22,22 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
 
+	GetCharacterMovement()->AirControl = 1.0f; // 100% air control
+
+	bIsWallSliding = false;
+    WallNormal = FVector::ZeroVector;
+	WallPosition = FVector::ZeroVector;
+
 	// Enable tick every frame
 	PrimaryActorTick.bCanEverTick = true;
 	
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(55.0f, 96.0f);
 		
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.0f, 0.0f, 60.0f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
@@ -41,7 +47,7 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
-	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+	Mesh1P->SetRelativeLocation(FVector(-30.0f, 0.0f, -150.0f));
 
 }
 
@@ -73,7 +79,10 @@ void AUnforgottenCharacter::Tick(float DeltaTime)
 		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Sliding!"));
 
 		if(CheckWallDistance())
+		{
 			UnmountWall();
+			GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Blue, TEXT("Unmounted!"));
+		}
     }
 }
 
@@ -181,6 +190,7 @@ void AUnforgottenCharacter::MountWall(FVector HitNormal, FHitResult HitResult)
 	bIsWallSliding = true;
 	WallNormal = HitNormal;
 	WallPosition = HitResult.Location;
+	JumpMaxCount++;
 	GetCharacterMovement()->GravityScale = 0.5f;
 	Landed(HitResult);
 }
@@ -190,17 +200,18 @@ void AUnforgottenCharacter::UnmountWall()
 	bIsWallSliding = false;
 	WallNormal = FVector::ZeroVector;
 	WallPosition = FVector::ZeroVector;
+	JumpMaxCount--;
 	GetCharacterMovement()->GravityScale = 1.0f;
 }
 
 bool AUnforgottenCharacter::CheckWallDistance()
 {
-	return FVector::Distance(GetActorLocation(), WallPosition) > GetCapsuleComponent()->GetScaledCapsuleRadius() * 2;
+	return FVector::Distance(GetActorLocation(), WallPosition) > GetCapsuleComponent()->GetScaledCapsuleRadius() * 2.5;
 }
 
 void AUnforgottenCharacter::HandleWallCollision(FVector HitNormal, FHitResult HitResult, bool HeadHit, bool BodyHit, bool FeetHit)
 {
-	if(!bIsWallSliding)
+	if(!bIsWallSliding && HitNormal != WallNormal)
 	{
 		if(HeadHit && BodyHit && FeetHit)
 		{
@@ -255,15 +266,13 @@ void AUnforgottenCharacter::Look(const FInputActionValue& Value)
 
 void AUnforgottenCharacter::Jump()
 {
-	if(!bIsWallSliding)
-		ACharacter::Jump();
-	else
-		WallJump();
-}
+	ACharacter::Jump();
 
-void AUnforgottenCharacter::WallJump()
-{
-
+	if(bIsWallSliding)
+	{
+		GetCharacterMovement()->Velocity + (WallNormal * 5) / GetCharacterMovement()->GravityScale;
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, TEXT("Player wall jumped!"));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Events
