@@ -78,23 +78,8 @@ public:
 	void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
 					FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit);
 	
-	/** Handle wall collision Event */
-	void HandleWallCollision(FVector HitNormal, FHitResult HitResult, bool HeadHit, bool ChestHit, bool BodyHit, bool KneeHit, bool FeetHit);
-
-	/** Wall Slide Event */
-    void WallSlide();
-
-	/** Bool for determining if wall sliding */
-    bool bIsWallSliding;
-    FVector WallNormal;
-	FVector WallPosition;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float AccumulatedFallTime;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MaxFallTimeToCapGravity;
-
+	void FireRays(FVector Direction, FVector HitNormal);
+	
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
@@ -113,18 +98,6 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-
-	/** Fires Rays to determines what wall action to do */
-	void FireRays(FVector Direction, FVector HitNormal);
-
-	/** Mount a wall*/
-	void MountWall(FVector HitNormal, FHitResult HitResult);
-
-	/** Unmount a wall*/
-	void UnmountWall();
-
-	/** Determine if we are still hugging the wall*/
-	bool CheckWallDistance();
 
 protected:
 	// APawn interface
