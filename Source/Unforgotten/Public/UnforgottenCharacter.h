@@ -73,6 +73,11 @@ public:
 	/** Landing Function */
 	void Landed(const FHitResult& Hit);
 
+	/** WallRun Event*/
+	void WallRun();
+	void WallRun_Implementation();
+	void WallRunUpdate();
+
 	/** On collision event*/
 	UFUNCTION()
 	void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,

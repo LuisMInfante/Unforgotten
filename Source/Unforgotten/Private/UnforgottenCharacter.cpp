@@ -67,6 +67,8 @@ void AUnforgottenCharacter::BeginPlay()
 void AUnforgottenCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+	WallRun();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -109,6 +111,31 @@ void AUnforgottenCharacter::Move(const FInputActionValue& Value)
 		GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("F: %f, R: %f"), MovementVector.Y, MovementVector.X));
 	}
 }
+
+void AUnforgottenCharacter::WallRun()
+{
+	WallRun_Implementation();
+}
+
+void AUnforgottenCharacter::WallRun_Implementation(FVector WallLocation)
+{
+	FVector PlayerLocation = GetActorLocation();
+
+	HHitResult HitResult;
+
+	bool bHitWall = GetWorld()->LineTraceSingleByChannel(HitResult, PlayerLocation, WallLocation, ECC_Visibility);
+}
+
+void AUnforgottenCharacter::WallRunUpdate()
+{
+	FVector PlayerLocation = GetActorLocation();
+	FVector ForwardDirection = GetActorForwardVector() * -35.0f;
+	FVector RightDirection = GetActorRightVector() * 75.0f;
+
+	FVector RightEndpoint = PlayerLocation + ForwardDirection + RightDirection;
+	FVector LeftEndpoint = PlayerLocation + ForwardDirection + -RightDirection;
+}
+
 
 void AUnforgottenCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
