@@ -75,7 +75,7 @@ public:
 
 	/** WallRun Event*/
 	void WallRun();
-	void WallRun_Implementation();
+	bool WallRun_Implementation(FVector Endpoint, float WallRunDirection);
 	void WallRunUpdate();
 
 	/** On collision event*/
@@ -84,6 +84,8 @@ public:
 					FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit);
 	
 	void FireRays(FVector Direction, FVector HitNormal);
+
+	bool bWallRunDrop;
 	
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)

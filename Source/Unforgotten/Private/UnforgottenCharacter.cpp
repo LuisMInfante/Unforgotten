@@ -26,6 +26,8 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 
 	// Enable tick every frame
 	PrimaryActorTick.bCanEverTick = true;
+
+	bWallRunDrop = true;
 	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.0f, 96.0f);
@@ -68,7 +70,7 @@ void AUnforgottenCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-	WallRun();
+	WallRunUpdate();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -114,16 +116,36 @@ void AUnforgottenCharacter::Move(const FInputActionValue& Value)
 
 void AUnforgottenCharacter::WallRun()
 {
-	WallRun_Implementation();
+	// WallRun_Implementation();
 }
 
-void AUnforgottenCharacter::WallRun_Implementation(FVector WallLocation)
+bool AUnforgottenCharacter::WallRun_Implementation(FVector Endpoint, float WallRunDirection)
 {
 	FVector PlayerLocation = GetActorLocation();
 
-	HHitResult HitResult;
+	FHitResult HitResult;
 
-	bool bHitWall = GetWorld()->LineTraceSingleByChannel(HitResult, PlayerLocation, WallLocation, ECC_Visibility);
+	bool bHitWall = GetWorld()->LineTraceSingleByChannel(HitResult, PlayerLocation, Endpoint, ECC_Visibility);
+
+	if(!bHitWall) return false; // If therew as no hit then return
+
+	FVector WallNormal = HitResult.Normal;
+
+	if(WallNormal.Z < -0.52 || WallNormal.Z > 0.52) return false; // Greater than our threshold then dont wall run
+
+	if(!GetCharacterMovement()->IsFalling()) return false;
+
+	FVector PlayerToWall = (PlayerLocation - WallNormal) * WallNormal;
+
+	LaunchCharacter(PlayerToWall, false, false); // Stick to wall
+
+	float WallRunSpeed = 850.0f; // Wall run speed static for now (Determine how we want to gauge it)
+
+	FVector ForwardDirection = FVector::CrossProduct(WallNormal, FVector(0, 0, 1)) * (WallRunSpeed * WallRunDirection);
+
+	LaunchCharacter(ForwardDirection, true, bWallRunDrop); // Move forward
+
+	return true;
 }
 
 void AUnforgottenCharacter::WallRunUpdate()
@@ -134,6 +156,9 @@ void AUnforgottenCharacter::WallRunUpdate()
 
 	FVector RightEndpoint = PlayerLocation + ForwardDirection + RightDirection;
 	FVector LeftEndpoint = PlayerLocation + ForwardDirection + -RightDirection;
+	
+	bool bRight = WallRun_Implementation(RightEndpoint, -1.0f);
+	bool bLeft = WallRun_Implementation(LeftEndpoint, 1.0f);
 }
 
 
