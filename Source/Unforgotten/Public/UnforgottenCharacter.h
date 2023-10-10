@@ -42,7 +42,7 @@ class AUnforgottenCharacter : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
-	
+
 public:
 	AUnforgottenCharacter();
 
@@ -79,7 +79,7 @@ public:
 					FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit);
 	
 	/** Handle wall collision Event */
-	void HandleWallCollision(FVector HitNormal, FHitResult HitResult, bool HeadHit, bool BodyHit, bool FeetHit);
+	void HandleWallCollision(FVector HitNormal, FHitResult HitResult, bool HeadHit, bool ChestHit, bool BodyHit, bool KneeHit, bool FeetHit);
 
 	/** Wall Slide Event */
     void WallSlide();
@@ -88,6 +88,12 @@ public:
     bool bIsWallSliding;
     FVector WallNormal;
 	FVector WallPosition;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AccumulatedFallTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MaxFallTimeToCapGravity;
 
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)

@@ -27,6 +27,8 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 	bIsWallSliding = false;
     WallNormal = FVector::ZeroVector;
 	WallPosition = FVector::ZeroVector;
+	AccumulatedFallTime = 0.0f;
+	MaxFallTimeToCapGravity = 2.0f;
 
 	// Enable tick every frame
 	PrimaryActorTick.bCanEverTick = true;
@@ -78,13 +80,29 @@ void AUnforgottenCharacter::Tick(float DeltaTime)
         // Adjust character's movement or apply forces based on WallNormal
 		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, TEXT("Sliding!"));
 
-		if(CheckWallDistance())
+		// Increase the accumulated fall time
+        AccumulatedFallTime += DeltaTime;
+
+        // Calculate increasing gravity
+		// float CurrentGravityScale = FMath::Lerp(0.5f, 1.5f, (AccumulatedFallTime / MaxFallTimeToCapGravity));
+        float CurrentGravityScale = FMath::Clamp(0.5f + (AccumulatedFallTime / MaxFallTimeToCapGravity), 0.5f, 1.5f);
+		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Yellow, FString::Printf(TEXT("dTime: %f, GravityScale: %f"), DeltaTime, CurrentGravityScale));
+        GetCharacterMovement()->GravityScale = CurrentGravityScale;
+
+		if(CheckWallDistance() || GetCharacterMovement()->Velocity.Z == 0)
 		{
 			UnmountWall();
+			GetCharacterMovement()->GravityScale = 1.0f;
+			AccumulatedFallTime = 0.0f;
 			GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Blue, TEXT("Unmounted!"));
 		}
     }
 }
+
+// TSubclassOf<UCharacterMovementComponent> AUnforgottenCharacter::GetDefaultMovementComponentClass() const override
+// {
+// 	return ECustomMovementMode::StaticClass();
+// }
 
 //////////////////////////////////////////////////////////////////////////// Input
 
@@ -168,7 +186,9 @@ void AUnforgottenCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other
 void AUnforgottenCharacter::FireRays(FVector Direction, FVector HitNormal)
 {
     FVector HeadLocation = GetActorLocation() + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // Head location
+	FVector ChestLocation = GetActorLocation() + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2); // Chest location
     FVector CenterLocation = GetActorLocation(); // Center location
+	FVector KneeLocation = GetActorLocation() - FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2); // Knee location
     FVector FeetLocation = GetActorLocation() - FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // Feet location
 
 	Direction.Z = 0.0f; // Ignore vertical velocity
@@ -179,10 +199,12 @@ void AUnforgottenCharacter::FireRays(FVector Direction, FVector HitNormal)
 
 	// Perform ray tracing
 	bool HeadHit = GetWorld()->LineTraceSingleByChannel(HitResult, HeadLocation, HeadLocation + Direction * TraceDistance, ECC_Visibility);
+	bool ChestHit = GetWorld()->LineTraceSingleByChannel(HitResult, ChestLocation, ChestLocation + Direction * TraceDistance, ECC_Visibility);
 	bool BodyHit = GetWorld()->LineTraceSingleByChannel(HitResult, CenterLocation, CenterLocation + Direction * TraceDistance, ECC_Visibility);
+	bool KeeHit = GetWorld()->LineTraceSingleByChannel(HitResult, KneeLocation, KneeLocation + Direction * TraceDistance, ECC_Visibility);
 	bool FeetHit = GetWorld()->LineTraceSingleByChannel(HitResult, FeetLocation, FeetLocation + Direction * TraceDistance, ECC_Visibility);
 
-	HandleWallCollision(HitNormal, HitResult, HeadHit, BodyHit, FeetHit);
+	HandleWallCollision(HitNormal, HitResult, HeadHit, ChestHit, BodyHit, KeeHit, FeetHit);
 }
 
 void AUnforgottenCharacter::MountWall(FVector HitNormal, FHitResult HitResult)
@@ -191,8 +213,8 @@ void AUnforgottenCharacter::MountWall(FVector HitNormal, FHitResult HitResult)
 	WallNormal = HitNormal;
 	WallPosition = HitResult.Location;
 	JumpMaxCount++;
-	GetCharacterMovement()->GravityScale = 0.5f;
-	Landed(HitResult);
+	// GetCharacterMovement()->GravityScale = 0.5f;
+	// Landed(HitResult);
 }
 
 void AUnforgottenCharacter::UnmountWall()
@@ -201,7 +223,7 @@ void AUnforgottenCharacter::UnmountWall()
 	WallNormal = FVector::ZeroVector;
 	WallPosition = FVector::ZeroVector;
 	JumpMaxCount--;
-	GetCharacterMovement()->GravityScale = 1.0f;
+	// GetCharacterMovement()->GravityScale = 1.0f;
 }
 
 bool AUnforgottenCharacter::CheckWallDistance()
@@ -209,18 +231,18 @@ bool AUnforgottenCharacter::CheckWallDistance()
 	return FVector::Distance(GetActorLocation(), WallPosition) > GetCapsuleComponent()->GetScaledCapsuleRadius() * 2.5;
 }
 
-void AUnforgottenCharacter::HandleWallCollision(FVector HitNormal, FHitResult HitResult, bool HeadHit, bool BodyHit, bool FeetHit)
+void AUnforgottenCharacter::HandleWallCollision(FVector HitNormal, FHitResult HitResult, bool HeadHit, bool ChestHit, bool BodyHit, bool KneeHit, bool FeetHit)
 {
 	if(!bIsWallSliding && HitNormal != WallNormal)
 	{
-		if(HeadHit && BodyHit && FeetHit)
+		if(HeadHit && ChestHit && BodyHit && KneeHit && FeetHit)
 		{
 			MountWall(HitNormal, HitResult);
 		}
 	}
 	else
 	{
-		if(!HeadHit && !BodyHit && !FeetHit)
+		if(!HeadHit && !ChestHit && !BodyHit && !KneeHit && !FeetHit)
 		{
 			UnmountWall();
 		}
@@ -270,7 +292,17 @@ void AUnforgottenCharacter::Jump()
 
 	if(bIsWallSliding)
 	{
-		GetCharacterMovement()->Velocity += (WallNormal * GetCharacterMovement()->JumpZVelocity) / GetCharacterMovement()->GravityScale;
+		FVector Direction = WallNormal + GetActorForwardVector(); // New direction based on the normal of the wall and player direction
+		Direction.Z = 0; // Ignore vertical direction
+		GetCharacterMovement()->Velocity += (Direction * GetCharacterMovement()->JumpZVelocity) / GetCharacterMovement()->GravityScale;
+
+        // Normalize the pitch to be between -90 and 90 degrees
+        float NormalizedPitch = FMath::ClampAngle(GetControlRotation().Pitch, -90.0f, 90.0f);
+
+        // Map the normalized pitch to a value between 0 and 1
+        NormalizedPitch = (NormalizedPitch + 90.0f) / 180.0f;
+
+		GetCharacterMovement()->Velocity.Z = GetCharacterMovement()->JumpZVelocity * NormalizedPitch;
 		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, TEXT("Player wall jumped!"));
 	}
 }
