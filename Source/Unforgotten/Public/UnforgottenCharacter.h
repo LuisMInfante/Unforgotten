@@ -77,6 +77,8 @@ public:
 	void WallRun();
 	bool WallRun_Implementation(FVector Endpoint, float WallRunDirection);
 	void WallRunUpdate();
+	void StopWallRun(float CDTimer);
+	void CameraTilt(float TargetRoll);
 
 	/** On collision event*/
 	UFUNCTION()
@@ -85,7 +87,13 @@ public:
 	
 	void FireRays(FVector Direction, FVector HitNormal);
 
-	bool bWallRunDrop;
+	bool bIsWallRun;
+	bool bWallRunStick;
+	bool bWallRunCD;
+	FVector WallNormal;
+	FTimerHandle WallRunHandle;
+
+	float DefaultGravity;
 	
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)

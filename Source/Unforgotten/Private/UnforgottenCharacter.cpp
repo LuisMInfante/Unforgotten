@@ -27,7 +27,12 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 	// Enable tick every frame
 	PrimaryActorTick.bCanEverTick = true;
 
-	bWallRunDrop = true;
+	WallNormal = FVector::ZeroVector;
+	bIsWallRun = false;
+	bWallRunStick = false;
+	bWallRunCD = false;
+
+	DefaultGravity = GetCharacterMovement()->GravityScale;
 	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.0f, 96.0f);
@@ -69,8 +74,11 @@ void AUnforgottenCharacter::BeginPlay()
 void AUnforgottenCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
-	WallRunUpdate();
+	
+	if(!bWallRunCD)
+		WallRunUpdate();
+	
+	GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("WALLLRUN: %d WALLRUNCD: %d"), bIsWallRun, bWallRunCD));
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -127,13 +135,20 @@ bool AUnforgottenCharacter::WallRun_Implementation(FVector Endpoint, float WallR
 
 	bool bHitWall = GetWorld()->LineTraceSingleByChannel(HitResult, PlayerLocation, Endpoint, ECC_Visibility);
 
+	if(bHitWall)
+		DrawDebugLine(GetWorld(), PlayerLocation, Endpoint, FColor::Yellow, true, 1.0f);
+
 	if(!bHitWall) return false; // If therew as no hit then return
 
-	FVector WallNormal = HitResult.Normal;
+	WallNormal = HitResult.Normal;
 
 	if(WallNormal.Z < -0.52 || WallNormal.Z > 0.52) return false; // Greater than our threshold then dont wall run
 
 	if(!GetCharacterMovement()->IsFalling()) return false;
+
+	bIsWallRun = true;
+
+	// CameraTilt(15.0f * WallRunDirection);
 
 	FVector PlayerToWall = (PlayerLocation - WallNormal) * WallNormal;
 
@@ -143,7 +158,7 @@ bool AUnforgottenCharacter::WallRun_Implementation(FVector Endpoint, float WallR
 
 	FVector ForwardDirection = FVector::CrossProduct(WallNormal, FVector(0, 0, 1)) * (WallRunSpeed * WallRunDirection);
 
-	LaunchCharacter(ForwardDirection, true, bWallRunDrop); // Move forward
+	LaunchCharacter(ForwardDirection, true, bWallRunStick); // Move forward
 
 	return true;
 }
@@ -159,6 +174,30 @@ void AUnforgottenCharacter::WallRunUpdate()
 	
 	bool bRight = WallRun_Implementation(RightEndpoint, -1.0f);
 	bool bLeft = WallRun_Implementation(LeftEndpoint, 1.0f);
+
+	if(bRight || bLeft)
+		GetCharacterMovement()->GravityScale = FMath::Lerp(GetCharacterMovement()->GravityScale, 0.25, GetWorld()->GetDeltaSeconds());
+	else if(bIsWallRun)
+		StopWallRun(1.0f);
+}
+
+void AUnforgottenCharacter::StopWallRun(float CDTimer)
+{
+	bIsWallRun = false;
+	// CameraTilt(0.0f);
+	GetCharacterMovement()->GravityScale = DefaultGravity;
+	bWallRunCD = true;
+
+	if(!GetWorld()->GetTimerManager().IsTimerActive(WallRunHandle))
+		GetWorld()->GetTimerManager().SetTimer(WallRunHandle, FTimerDelegate::CreateLambda([this]() {bWallRunCD = false;}), CDTimer, false);
+}
+
+void AUnforgottenCharacter::CameraTilt(float TargetRoll)
+{
+	AController *Camera = GetController();
+	FRotator CameraRotation = Camera->GetControlRotation();
+
+	Camera->SetControlRotation(FMath::RInterpTo(CameraRotation, FRotator(TargetRoll, CameraRotation.Pitch, CameraRotation.Yaw), GetWorld()->GetDeltaSeconds(), 10.0f));
 }
 
 
@@ -228,6 +267,12 @@ void AUnforgottenCharacter::Look(const FInputActionValue& Value)
 void AUnforgottenCharacter::Jump()
 {
 	ACharacter::Jump();
+
+	if(bIsWallRun)
+	{
+		StopWallRun(0.35f);
+		LaunchCharacter(FVector(WallNormal.X * 300.0f, WallNormal.Y * 300.0f, 400.0f), false, true); // Move forward
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Events
@@ -257,7 +302,8 @@ void AUnforgottenCharacter::Landed(const FHitResult & Hit)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, TEXT("Player Landed!"));
 
-	// UnmountWall();
+	if(bIsWallRun)
+		StopWallRun(0.01f);
 }
 
 //////////////////////////////////////////////////////////////////////////// Getter / Setter
