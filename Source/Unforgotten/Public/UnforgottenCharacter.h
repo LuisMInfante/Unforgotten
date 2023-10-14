@@ -47,6 +47,9 @@ public:
 protected:
 	virtual void BeginPlay();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 public:
 		
 	/** Look Input Action */
@@ -82,6 +85,14 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+private:
+
+	class AWeapon* OverlappingWeapon;
+
+public:
+
+	FORCEINLINE void SetOverlappingWeapon(AWeapon* Weapon) { OverlappingWeapon = Weapon; }
 
 };
 

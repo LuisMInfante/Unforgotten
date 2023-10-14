@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Weapon/Weapon.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -18,6 +19,9 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AUnforgottenCharacter::AUnforgottenCharacter()
 {
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
 	
@@ -57,6 +61,16 @@ void AUnforgottenCharacter::BeginPlay()
 
 }
 
+void AUnforgottenCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if(OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget(true);
+	}
+
+}
 //////////////////////////////////////////////////////////////////////////// Input
 
 void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
