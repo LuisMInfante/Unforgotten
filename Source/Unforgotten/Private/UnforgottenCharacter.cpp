@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "Weapon/Weapon.h"
+#include "CharacterComponents/CombatComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -42,6 +43,8 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 
 }
 
@@ -87,6 +90,9 @@ void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::Look);
+
+		// Equip
+		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::Equip);
 	}
 	else
 	{
@@ -94,6 +100,15 @@ void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	}
 }
 
+void AUnforgottenCharacter::PostInitializeComponents() 
+{
+	Super::PostInitializeComponents();
+	
+	if(Combat)
+	{
+		Combat->Character = this;
+	}
+}
 
 void AUnforgottenCharacter::Move(const FInputActionValue& Value)
 {
@@ -120,6 +135,17 @@ void AUnforgottenCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
+
+void AUnforgottenCharacter::Equip() 
+{
+	if(Combat)
+	{
+		Combat->EquipWeapon(OverlappingWeapon);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Equip Action Pressed!"));
+}
+
 
 void AUnforgottenCharacter::SetHasRifle(bool bNewHasRifle)
 {

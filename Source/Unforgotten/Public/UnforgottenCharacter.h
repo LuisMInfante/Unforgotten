@@ -40,9 +40,17 @@ class AUnforgottenCharacter : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	// Equip Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* EquipAction;
 	
 public:
 	AUnforgottenCharacter();
+
+	virtual void PostInitializeComponents() override;
+
+	friend class CombatComponent; // maybe
 
 protected:
 	virtual void BeginPlay();
@@ -75,6 +83,9 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	// called for equipping weapon
+	void Equip();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -89,6 +100,9 @@ public:
 private:
 
 	class AWeapon* OverlappingWeapon;
+
+	UPROPERTY(VisibleAnywhere)
+	class UCombatComponent* Combat;
 
 public:
 
