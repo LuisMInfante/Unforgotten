@@ -56,46 +56,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
-	/** Jump Action */
-	void Jump();
-
-	/** Jump Event */
-	void OnJumped_Implementation();
-
-	/** StopJumping Event */
-	void StopJumping();
-
-	/** Jump Peak Event */
-	void NotifyJumpApex();
-
-	/** Falling Event */
-	void Falling();
-
-	/** Landing Function */
-	void Landed(const FHitResult& Hit);
-
-	/** WallRun Event*/
-	void WallRun();
-	bool WallRun_Implementation(FVector Endpoint, float WallRunDirection);
-	void WallRunUpdate();
-	void StopWallRun(float CDTimer);
-	void CameraTilt(float TargetRoll);
-
-	/** On collision event*/
-	UFUNCTION()
-	void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
-					FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit);
-	
-	void FireRays(FVector Direction, FVector HitNormal);
-
-	bool bIsWallRun;
-	bool bWallRunStick;
-	bool bWallRunCD;
-	FVector WallNormal;
-	FTimerHandle WallRunHandle;
-
-	float DefaultGravity;
-	
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
@@ -125,8 +85,6 @@ protected:
 	// End of APawn interface
 
 public:
-	/** Call upon every tick */
-	virtual void Tick(float DeltaTime) override;
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/

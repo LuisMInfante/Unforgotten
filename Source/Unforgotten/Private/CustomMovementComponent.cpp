@@ -433,7 +433,7 @@ void UCustomMovementComponent::CrouchUpdate(bool bClientSimulation)
 }
 void UCustomMovementComponent::Crouch(bool bClientSimulation)
 {
-	if(bCrouchHeld && bSprintHeld && !IsCustomMovementMode((uint8)ECustomMovementMode::MOVE_Slide) && Velocity.SizeSquared() > pow(700.0f, 2))
+	if(bCrouchHeld && bSprintHeld && !IsCustomMovementMode((uint8)ECustomMovementMode::MOVE_Slide) && Velocity.SizeSquared() > pow(700.0f, 2) && !IsFalling())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.5f, FColor::Green, FString::Printf(TEXT("Entered SLide")));
 		SetMovementMode(EMovementMode::MOVE_Custom, (uint8) ECustomMovementMode::MOVE_Slide);
