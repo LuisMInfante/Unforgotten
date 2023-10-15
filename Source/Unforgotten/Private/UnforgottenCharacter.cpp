@@ -10,17 +10,19 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "CustomMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // AUnforgottenCharacter
 
-AUnforgottenCharacter::AUnforgottenCharacter()
+AUnforgottenCharacter::AUnforgottenCharacter(const class FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UCustomMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
-	
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 		
@@ -55,6 +57,18 @@ void AUnforgottenCharacter::BeginPlay()
 		}
 	}
 
+}
+
+// Called to bind functionality to input
+// void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+// {
+// 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+// }
+
+UCustomMovementComponent* AUnforgottenCharacter::GetCustomMovementComponent() const
+{
+	return static_cast<UCustomMovementComponent*>(GetCharacterMovement());
 }
 
 //////////////////////////////////////////////////////////////////////////// Input

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "CustomMovementComponent.h"
 #include "UnforgottenCharacter.generated.h"
 
 class UInputComponent;
@@ -40,9 +41,9 @@ class AUnforgottenCharacter : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
-	
+
 public:
-	AUnforgottenCharacter();
+	AUnforgottenCharacter(const class FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay();
@@ -64,6 +65,10 @@ public:
 	/** Getter for the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
+
+	// Gets the character's MyCustomMovementComponent
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	UCustomMovementComponent* GetCustomMovementComponent() const;
 
 protected:
 	/** Called for movement input */
