@@ -29,6 +29,8 @@ public:
 
 	void ShowPickupWidget(bool bShowWidget);
 
+	virtual void Fire(const FVector& HitTarget);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -65,8 +67,12 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class UWidgetComponent* PickupWidget;
 
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	class UAnimationAsset* FireAnimation;
+
 public:	
 
 	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; }
-
+	FORCEINLINE USphereComponent* GetOverlapVolume() const { return OverlapVolume; }
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 };

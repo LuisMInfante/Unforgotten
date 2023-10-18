@@ -6,14 +6,15 @@
 #include "UnforgottenCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
 }
@@ -34,7 +35,6 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 
@@ -57,3 +57,75 @@ void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip)
 	EquippedWeapon->SetOwner(Character);
 	EquippedWeapon->ShowPickupWidget(false);
 }
+
+void UCombatComponent::FireButtonPressed(bool bPressed) 
+{
+	bFireButtonPressed = bPressed;
+
+	if(!EquippedWeapon) return;
+
+	if(Character && bFireButtonPressed)
+	{
+		FHitResult HitResult;
+		TraceUnderCrosshair(HitResult);
+		Character->PlayFireMontage(false); // switch for bIsAiming later
+		EquippedWeapon->Fire(HitTarget);
+	}
+}
+
+void UCombatComponent::TraceUnderCrosshair(FHitResult& TraceHitResult) 
+{
+	FVector2D ViewportSize;
+
+	if(GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
+	}
+
+	// Find the center of the screen (screen space)
+	FVector2D CrosshairLocation(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
+	// Translate to 3D world space
+	FVector CrosshairWorldPosition;
+	FVector CrosshairWorldDirection;
+	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(
+		UGameplayStatics::GetPlayerController(this, 0), 
+		CrosshairLocation, 
+		CrosshairWorldPosition, 
+		CrosshairWorldDirection
+	);
+
+	// Line Trace
+	if(bScreenToWorld)
+	{
+		FVector StartLocation = CrosshairWorldPosition; // start at center of screen
+		FVector EndLocation = StartLocation + CrosshairWorldDirection * TRACE_LENGTH; // projecting away from screen X units
+
+		GetWorld()->LineTraceSingleByChannel(
+			TraceHitResult,
+			StartLocation,
+			EndLocation,
+			ECollisionChannel::ECC_Visibility
+		);
+
+		// Set impact point if we don't hit anything
+		if(!TraceHitResult.bBlockingHit)
+		{
+			TraceHitResult.ImpactPoint = EndLocation;
+			HitTarget = EndLocation;
+		}
+		else // We hit something in range
+		{
+			HitTarget = TraceHitResult.ImpactPoint;
+
+			// DrawDebugSphere(
+			// 	GetWorld(),
+			// 	TraceHitResult.ImpactPoint,
+			// 	12.f,
+			// 	12,
+			// 	FColor::Red,
+			// 	false
+			// );
+		}
+	}
+}
+

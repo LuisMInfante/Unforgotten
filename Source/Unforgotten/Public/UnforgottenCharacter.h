@@ -44,6 +44,10 @@ class AUnforgottenCharacter : public ACharacter
 	// Equip Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* EquipAction;
+
+	// Fire Weapon Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
 	
 public:
 	AUnforgottenCharacter();
@@ -51,6 +55,8 @@ public:
 	virtual void PostInitializeComponents() override;
 
 	friend class CombatComponent; // maybe
+
+	void PlayFireMontage(bool bIsAiming);
 
 protected:
 	virtual void BeginPlay();
@@ -86,6 +92,9 @@ protected:
 	// called for equipping weapon
 	void Equip();
 
+	void FireButtonPressed();
+	void FireButtonReleased();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -103,6 +112,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	class UCombatComponent* Combat;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UAnimMontage* FireWeaponMontage;
 
 public:
 

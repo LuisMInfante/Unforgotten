@@ -7,6 +7,9 @@
 // ******* CHANGE THIS INCLUDE LATER *********
 #include "UnforgottenCharacter.h"
 
+#include "Animation/AnimationAsset.h"
+#include "Components/SkeletalMeshComponent.h"
+
 // Sets default values
 AWeapon::AWeapon()
 {
@@ -56,9 +59,17 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 {
 	AUnforgottenCharacter* UnforgottenCharacter = Cast<AUnforgottenCharacter>(OtherActor);
 	if(UnforgottenCharacter && PickupWidget)
-	{
-		UnforgottenCharacter->SetOverlappingWeapon(this);
-		PickupWidget->SetVisibility(true);
+	{	
+		if(UnforgottenCharacter->GetHasRifle() == false)
+		{
+			UnforgottenCharacter->SetOverlappingWeapon(this);
+			PickupWidget->SetVisibility(true);
+		}
+		else
+		{
+			UnforgottenCharacter->SetOverlappingWeapon(nullptr);
+			PickupWidget->SetVisibility(false);
+		}
 	}
 	
 }
@@ -79,5 +90,14 @@ void AWeapon::ShowPickupWidget(bool bShowWidget)
 	if(PickupWidget)
 	{
 		PickupWidget->SetVisibility(bShowWidget);
+	}
+}
+
+
+void AWeapon::Fire(const FVector& HitTarget) 
+{
+	if(FireAnimation)
+	{
+		WeaponMesh->PlayAnimation(FireAnimation, false);
 	}
 }

@@ -68,10 +68,6 @@ void AUnforgottenCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(OverlappingWeapon)
-	{
-		OverlappingWeapon->ShowPickupWidget(true);
-	}
 
 }
 //////////////////////////////////////////////////////////////////////////// Input
@@ -93,6 +89,11 @@ void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// Equip
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::Equip);
+
+		// Fire Weapon
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::FireButtonPressed);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AUnforgottenCharacter::FireButtonReleased);
+
 	}
 	else
 	{
@@ -107,6 +108,23 @@ void AUnforgottenCharacter::PostInitializeComponents()
 	if(Combat)
 	{
 		Combat->Character = this;
+	}
+}
+
+
+void AUnforgottenCharacter::PlayFireMontage(bool bIsAiming) 
+{
+	if(!Combat || !Combat->EquippedWeapon) return;
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance && FireWeaponMontage)
+	{
+		AnimInstance->Montage_Play(FireWeaponMontage);
+
+		// Logic for when we implement ADS
+		FName SectionName;
+		SectionName = bIsAiming ? FName("ADS") : FName("Default");
+		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
 
@@ -144,6 +162,27 @@ void AUnforgottenCharacter::Equip()
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Equip Action Pressed!"));
+}
+
+void AUnforgottenCharacter::FireButtonPressed() 
+{
+	if(Combat)
+	{
+		Combat->FireButtonPressed(true);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Fire Button Pressed!"));
+}
+
+
+void AUnforgottenCharacter::FireButtonReleased() 
+{
+	if(Combat)
+	{
+		Combat->FireButtonPressed(false);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Fire Button Released!"));
 }
 
 

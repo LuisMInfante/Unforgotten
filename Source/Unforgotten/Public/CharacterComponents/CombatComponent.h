@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
+#define TRACE_LENGTH 80000.f
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNFORGOTTEN_API UCombatComponent : public UActorComponent
@@ -27,10 +28,19 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	void FireButtonPressed(bool bPressed);
+
+	void TraceUnderCrosshair(FHitResult& TraceHitResult);
+
 private:
 
 	class AUnforgottenCharacter* Character; 
 	AWeapon* EquippedWeapon;
+
+	bool bFireButtonPressed;
+
+	FVector HitTarget;
+
 public:	
 
 		
