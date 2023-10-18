@@ -16,7 +16,8 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 //////////////////////////////////////////////////////////////////////////
 // AUnforgottenCharacter
 
-AUnforgottenCharacter::AUnforgottenCharacter()
+AUnforgottenCharacter::AUnforgottenCharacter(const class FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UCustomMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Character doesnt have a rifle at start
 	bHasRifle = false;

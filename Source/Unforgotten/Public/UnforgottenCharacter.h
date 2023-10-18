@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "CustomMovementComponent.h"
 #include "UnforgottenCharacter.generated.h"
 
 class UInputComponent;
@@ -12,6 +13,7 @@ class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class UCharacterMovementComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -42,7 +44,7 @@ class AUnforgottenCharacter : public ACharacter
 	UInputAction* MoveAction;
 	
 public:
-	AUnforgottenCharacter();
+	AUnforgottenCharacter(const class FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay();
