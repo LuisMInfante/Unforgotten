@@ -4,22 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Projectile.generated.h"
+#include "Casing.generated.h"
 
 UCLASS()
-class UNFORGOTTEN_API AProjectile : public AActor
+class UNFORGOTTEN_API ACasing : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AProjectile();
+	ACasing();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void Destroyed() override;
-	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -29,25 +27,13 @@ protected:
 
 private:
 
-	UPROPERTY(EditAnywhere)
-	class UBoxComponent* CollisionBox;
-
 	UPROPERTY(VisibleAnywhere)
-	class UProjectileMovementComponent* ProjectileMovementComponent;
-
-	float ProjectileImpulse;
+	UStaticMeshComponent* CasingMesh;
 
 	UPROPERTY(EditAnywhere)
-	class UParticleSystem* Tracer;
-
-	class UParticleSystemComponent* TracerComponent;
+	float ShellEjectImpulse;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* ImpactParticles;
-
-	UPROPERTY(EditAnywhere)
-	class USoundCue* ImpactSound;
-
-public:	
+	class USoundCue* ShellSound;
 
 };
