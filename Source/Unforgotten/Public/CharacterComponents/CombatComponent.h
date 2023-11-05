@@ -32,9 +32,13 @@ protected:
 
 	void TraceUnderCrosshair(FHitResult& TraceHitResult);
 
+	void SetHUDCrosshairs(float DeltaTime);
+
 private:
 
 	class AUnforgottenCharacter* Character; 
+	class AUnforgottenPlayerController* Controller;
+	class AUnforgottenHUD* HUD;
 	AWeapon* EquippedWeapon;
 
 	bool bFireButtonPressed;

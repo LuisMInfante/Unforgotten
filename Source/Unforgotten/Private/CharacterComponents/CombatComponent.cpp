@@ -8,6 +8,9 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "UnforgottenPlayerController.h"
+#include "HUD/UnforgottenHUD.h"
+
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -34,6 +37,8 @@ void UCombatComponent::BeginPlay()
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	SetHUDCrosshairs(DeltaTime);
 
 }
 
@@ -129,3 +134,38 @@ void UCombatComponent::TraceUnderCrosshair(FHitResult& TraceHitResult)
 	}
 }
 
+void UCombatComponent::SetHUDCrosshairs(float DeltaTime) 
+{
+	if (!Character || !Character->Controller) return;
+
+	Controller = !Controller ? Cast<AUnforgottenPlayerController>(Character->Controller) : Controller;
+
+	if (Controller)
+	{
+		HUD = !HUD ? Cast<AUnforgottenHUD>(Controller->GetHUD()) : HUD;
+		if (HUD)
+		{
+			FHUDPackage HUDPackage;
+			
+			if (EquippedWeapon)
+			{
+				HUDPackage.CenterCrosshair = EquippedWeapon->CenterCrosshair;
+				HUDPackage.LeftCrosshair = EquippedWeapon->LeftCrosshair;
+				HUDPackage.RightCrosshair = EquippedWeapon->RightCrosshair;
+				HUDPackage.TopCrosshair = EquippedWeapon->LeftCrosshair;
+				HUDPackage.BottomCrosshair = EquippedWeapon->RightCrosshair;
+			}
+			else
+			{
+				HUDPackage.CenterCrosshair = nullptr;
+				HUDPackage.LeftCrosshair = nullptr;
+				HUDPackage.RightCrosshair = nullptr;
+				HUDPackage.TopCrosshair = nullptr;
+				HUDPackage.BottomCrosshair = nullptr;
+			}
+
+			HUD->SetHUDPackage(HUDPackage);
+		}
+	}
+
+}

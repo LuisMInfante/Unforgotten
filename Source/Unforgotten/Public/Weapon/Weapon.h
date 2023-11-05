@@ -31,6 +31,22 @@ public:
 
 	virtual void Fire(const FVector& HitTarget);
 
+	// Crosshair Textures
+	UPROPERTY(EditAnywhere, Category = "Crosshairs")
+	class UTexture2D* CenterCrosshair;
+
+	UPROPERTY(EditAnywhere, Category = "Crosshairs")
+	UTexture2D* LeftCrosshair;
+
+	UPROPERTY(EditAnywhere, Category = "Crosshairs")
+	UTexture2D* RightCrosshair;
+
+	UPROPERTY(EditAnywhere, Category = "Crosshairs")
+	UTexture2D* TopCrosshair;
+
+	UPROPERTY(EditAnywhere, Category = "Crosshairs")
+	UTexture2D* BottomCrosshair;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -73,21 +89,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ACasing> CasingClass;
 
-	// Crosshair Textures
-	UPROPERTY(EditAnywhere, Category = "Crosshairs")
-	class UTexture2D* CenterCrosshair;
-
-	UPROPERTY(EditAnywhere, Category = "Crosshairs")
-	UTexture2D* LeftCrosshair;
-
-	UPROPERTY(EditAnywhere, Category = "Crosshairs")
-	UTexture2D* RightCrosshair;
-
-	UPROPERTY(EditAnywhere, Category = "Crosshairs")
-	UTexture2D* TopCrosshair;
-
-	UPROPERTY(EditAnywhere, Category = "Crosshairs")
-	UTexture2D* BottomCrosshair;
 public:	
 
 	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; }

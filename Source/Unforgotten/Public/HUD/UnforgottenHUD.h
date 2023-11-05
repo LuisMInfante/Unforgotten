@@ -6,9 +6,19 @@
 #include "GameFramework/HUD.h"
 #include "UnforgottenHUD.generated.h"
 
-/**
- * 
- */
+USTRUCT(BlueprintType)
+struct FHUDPackage
+{
+	GENERATED_BODY()
+
+public:
+
+	class UTexture2D* CenterCrosshair;
+	UTexture2D* LeftCrosshair;
+	UTexture2D* RightCrosshair;
+	UTexture2D* TopCrosshair;
+	UTexture2D* BottomCrosshair;
+};
 UCLASS()
 class UNFORGOTTEN_API AUnforgottenHUD : public AHUD
 {
@@ -17,4 +27,12 @@ class UNFORGOTTEN_API AUnforgottenHUD : public AHUD
 public:
 
 	virtual void DrawHUD() override;
+
+private: 
+
+	FHUDPackage HUDPackage;
+
+public:
+
+	FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
 };
