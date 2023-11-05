@@ -45,6 +45,10 @@ private:
 
 	FVector HitTarget;
 
+	// HUD/Crosshair
+	float CrosshairVelocityMapped;
+	float CrosshairInAirMapped;
+
 public:	
 
 		

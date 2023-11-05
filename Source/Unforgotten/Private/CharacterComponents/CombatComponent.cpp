@@ -10,6 +10,7 @@
 #include "DrawDebugHelpers.h"
 #include "UnforgottenPlayerController.h"
 #include "HUD/UnforgottenHUD.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values for this component's properties
@@ -163,6 +164,25 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 				HUDPackage.TopCrosshair = nullptr;
 				HUDPackage.BottomCrosshair = nullptr;
 			}
+
+			// Calculate crosshair spread
+			// [0, MaxMovementSpeed] -> [0, 1]
+			FVector2D WalkSpeedRange(0.f, Character->GetCharacterMovement()->MaxWalkSpeed); // might calculate crouching later
+			FVector2D MappedVelocityRange(0.f, 1.f);
+			FVector Velocity = Character->GetVelocity();
+			Velocity.Z = 0.f;
+
+			CrosshairVelocityMapped = FMath::GetMappedRangeValueClamped(WalkSpeedRange, MappedVelocityRange, Velocity.Size());
+			if (Character->GetCharacterMovement()->IsFalling())
+			{
+				CrosshairInAirMapped = FMath::FInterpTo(CrosshairInAirMapped, 2.25, DeltaTime, 2.25f);
+			}
+			else
+			{
+				CrosshairInAirMapped = FMath::FInterpTo(CrosshairInAirMapped, 0, DeltaTime, 30.f);
+			}
+
+			HUDPackage.CrosshairSpread = CrosshairVelocityMapped + CrosshairInAirMapped;
 
 			HUD->SetHUDPackage(HUDPackage);
 		}

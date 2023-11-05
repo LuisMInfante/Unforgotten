@@ -18,6 +18,9 @@ public:
 	UTexture2D* RightCrosshair;
 	UTexture2D* TopCrosshair;
 	UTexture2D* BottomCrosshair;
+
+	float CrosshairSpread;
+
 };
 UCLASS()
 class UNFORGOTTEN_API AUnforgottenHUD : public AHUD
@@ -32,8 +35,11 @@ private:
 
 	FHUDPackage HUDPackage;
 
-	void DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter);
+	void DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter, FVector2D Spread);
 
+	UPROPERTY(EditAnywhere)
+	float MaxCrosshairSpread = 16.f;
+	
 public:
 
 	FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
