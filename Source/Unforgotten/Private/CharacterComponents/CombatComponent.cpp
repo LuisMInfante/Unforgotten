@@ -62,6 +62,7 @@ void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip)
 	}
 
 	EquippedWeapon->SetOwner(Character);
+	EquippedWeapon->SetHUDAmmo();
 	EquippedWeapon->ShowPickupWidget(false);
 }
 
@@ -221,7 +222,7 @@ void UCombatComponent::FireTimerEnded()
 
 void UCombatComponent::Fire() 
 {
-	if(Character && bCanFire)
+	if(Character && CanFire())
 	{
 		bCanFire = false;
 		FHitResult HitResult;
@@ -231,4 +232,11 @@ void UCombatComponent::Fire()
 		StartFireTimer();
 		CrosshairVelocityMapped = 0.75f;
 	}
+}
+
+bool UCombatComponent::CanFire() 
+{
+	if (!EquippedWeapon) return false;
+
+	return !EquippedWeapon->IsEmpty() || !bCanFire;
 }

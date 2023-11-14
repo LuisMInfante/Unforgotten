@@ -18,6 +18,8 @@ class UNFORGOTTEN_API AUnforgottenPlayerController : public APlayerController
 public:
 
 	void SetHUDHealth(float CurrentHealth, float MaxHealth);
+
+	void SetHUDWeaponAmmo(int32 Ammo);
 	
 protected:
 

@@ -43,3 +43,19 @@ void AUnforgottenPlayerController::SetHUDHealth(float CurrentHealth, float MaxHe
 		UnforgottenHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
 	}
 }
+
+void AUnforgottenPlayerController::SetHUDWeaponAmmo(int32 Ammo) 
+{
+	// if hud is null then cast to hud
+	UnforgottenHUD = !UnforgottenHUD ? Cast<AUnforgottenHUD>(GetHUD()) : UnforgottenHUD;
+
+	bool bHUDIsValid = UnforgottenHUD && 
+					   UnforgottenHUD->CharacterOverlay &&  
+					   UnforgottenHUD->CharacterOverlay->WeaponAmmoAmount;
+
+	if(bHUDIsValid)
+	{
+		FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
+		UnforgottenHUD->CharacterOverlay->WeaponAmmoAmount->SetText(FText::FromString(AmmoText));
+	}
+}

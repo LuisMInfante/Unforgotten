@@ -11,6 +11,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Weapon/Casing.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Unforgotten/Public/UnforgottenPlayerController.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -123,4 +124,33 @@ void AWeapon::Fire(const FVector& HitTarget)
 			}
 		}
 	}
+
+	SpendAmmo();
+}
+
+
+void AWeapon::SpendAmmo() 
+{
+	Ammo = FMath::Clamp(Ammo - 1, 0, MagazineCapacity);
+	SetHUDAmmo();
+}
+
+void AWeapon::SetHUDAmmo() 
+{
+	UnforgottenOwnerCharacter = !UnforgottenOwnerCharacter ? Cast<AUnforgottenCharacter>(GetOwner()) : UnforgottenOwnerCharacter;
+
+	if (UnforgottenOwnerCharacter)
+	{
+		UnforgottenOwnerController = !UnforgottenOwnerController ? Cast<AUnforgottenPlayerController>(UnforgottenOwnerCharacter->Controller) : UnforgottenOwnerController;
+
+		if (UnforgottenOwnerController)
+		{
+			UnforgottenOwnerController->SetHUDWeaponAmmo(Ammo);
+		}
+	}
+}
+
+bool AWeapon::IsEmpty() 
+{
+	return Ammo <= 0;
 }

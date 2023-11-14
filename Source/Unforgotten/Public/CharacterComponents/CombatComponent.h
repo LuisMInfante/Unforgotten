@@ -61,6 +61,8 @@ private:
 	void FireTimerEnded();
 	void Fire();
 
+	bool CanFire();
+
 public:	
 
 		

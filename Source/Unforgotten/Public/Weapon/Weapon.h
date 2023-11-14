@@ -31,6 +31,8 @@ public:
 
 	virtual void Fire(const FVector& HitTarget);
 
+	void SetHUDAmmo();
+
 	// Crosshair Textures
 	UPROPERTY(EditAnywhere, Category = "Crosshairs")
 	class UTexture2D* CenterCrosshair;
@@ -96,9 +98,23 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ACasing> CasingClass;
 
+	UPROPERTY(EditAnywhere)
+	int32 Ammo;
+
+	UPROPERTY(EditAnywhere)
+	int32 MagazineCapacity;
+
+	void SpendAmmo();
+	
+	UPROPERTY()
+	class AUnforgottenCharacter* UnforgottenOwnerCharacter;
+	UPROPERTY()
+	class AUnforgottenPlayerController* UnforgottenOwnerController;
+
 public:	
 
 	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; }
 	FORCEINLINE USphereComponent* GetOverlapVolume() const { return OverlapVolume; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
+	bool IsEmpty();
 };
