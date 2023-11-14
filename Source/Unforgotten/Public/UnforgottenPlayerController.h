@@ -21,6 +21,7 @@ public:
 
 	void SetHUDWeaponAmmo(int32 Ammo);
 	
+	void SetHUDCarriedAmmo(int32 Ammo);
 protected:
 
 	/** Input Mapping Context to be used for player input */

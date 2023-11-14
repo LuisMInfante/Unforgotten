@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "HUD/UnforgottenHUD.h"
+#include "Unforgotten/Public/Weapon/WeaponTypes.h"
 #include "CombatComponent.generated.h"
 
 #define TRACE_LENGTH 80000.f
@@ -62,6 +63,12 @@ private:
 	void Fire();
 
 	bool CanFire();
+
+	// For currently equipped weapon
+	UPROPERTY()
+	int32 CarriedAmmo;
+
+	TMap<EWeaponType, int32> CarriedAmmoMap;
 
 public:	
 
