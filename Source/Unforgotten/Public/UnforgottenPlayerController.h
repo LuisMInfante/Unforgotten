@@ -15,6 +15,9 @@ UCLASS()
 class UNFORGOTTEN_API AUnforgottenPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+public:
+
+	void SetHUDHealth(float CurrentHealth, float MaxHealth);
 	
 protected:
 
@@ -28,4 +31,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	// End Actor interface
+
+private:
+
+	class AUnforgottenHUD* UnforgottenHUD;
 };

@@ -2,6 +2,27 @@
 
 
 #include "HUD/UnforgottenHUD.h"
+#include "GameFramework/PlayerController.h"
+#include "HUD/CharacterOverlay.h"
+
+
+void AUnforgottenHUD::BeginPlay() 
+{
+    Super::BeginPlay();
+
+    AddCharacterOverlay();
+}
+
+void AUnforgottenHUD::AddCharacterOverlay() 
+{
+    APlayerController* PlayerController = GetOwningPlayerController();
+
+    if (PlayerController && CharacterOverlayClass)
+    {
+        CharacterOverlay = CreateWidget<UCharacterOverlay>(PlayerController, CharacterOverlayClass);
+        CharacterOverlay->AddToViewport();
+    }
+}
 
 void AUnforgottenHUD::DrawHUD() 
 {
@@ -18,32 +39,32 @@ void AUnforgottenHUD::DrawHUD()
         if (HUDPackage.CenterCrosshair)
         {
             FVector2D Spread(0.f, 0.f); // don't spread
-            DrawCrosshair(HUDPackage.CenterCrosshair, ViewportCenter, Spread);
+            DrawCrosshair(HUDPackage.CenterCrosshair, ViewportCenter, Spread, HUDPackage.CrosshairColor);
         }
         if (HUDPackage.LeftCrosshair)
         {   
             FVector2D Spread(-ScaledSpread, 0.f); // Only spread left
-            DrawCrosshair(HUDPackage.LeftCrosshair, ViewportCenter, Spread);
+            DrawCrosshair(HUDPackage.LeftCrosshair, ViewportCenter, Spread, HUDPackage.CrosshairColor);
         }
         if (HUDPackage.RightCrosshair)
         {
             FVector2D Spread(ScaledSpread, 0.f); // Only spread right
-            DrawCrosshair(HUDPackage.RightCrosshair, ViewportCenter, Spread);
+            DrawCrosshair(HUDPackage.RightCrosshair, ViewportCenter, Spread, HUDPackage.CrosshairColor);
         }
         if (HUDPackage.TopCrosshair)
         {
             FVector2D Spread(0.f, -ScaledSpread); // Only spread upwards
-            DrawCrosshair(HUDPackage.TopCrosshair, ViewportCenter, Spread);
+            DrawCrosshair(HUDPackage.TopCrosshair, ViewportCenter, Spread, HUDPackage.CrosshairColor);
         }
         if (HUDPackage.BottomCrosshair)
         {
             FVector2D Spread(0.f, ScaledSpread); // Only spread downwards
-            DrawCrosshair(HUDPackage.BottomCrosshair, ViewportCenter, Spread);
+            DrawCrosshair(HUDPackage.BottomCrosshair, ViewportCenter, Spread, HUDPackage.CrosshairColor);
         }
     }
 }
 
-void AUnforgottenHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter, FVector2D Spread) 
+void AUnforgottenHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter, FVector2D Spread, FLinearColor CrosshairColor) 
 {
     const float TextureWidth = Texture->GetSizeX();
     const float TextureHeight = Texture->GetSizeY();
@@ -63,6 +84,6 @@ void AUnforgottenHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCente
         0.f,
         1.f,
         1.f,
-        FLinearColor::White
+        CrosshairColor
     );
 }

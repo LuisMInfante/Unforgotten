@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "HUD/UnforgottenHUD.h"
 #include "CombatComponent.generated.h"
 
 #define TRACE_LENGTH 80000.f
@@ -48,6 +49,17 @@ private:
 	// HUD/Crosshair
 	float CrosshairVelocityMapped;
 	float CrosshairInAirMapped;
+
+	FHUDPackage HUDPackage;
+
+	// Full Auto
+	FTimerHandle FireTimer;
+
+	bool bCanFire = true;
+
+	void StartFireTimer();
+	void FireTimerEnded();
+	void Fire();
 
 public:	
 

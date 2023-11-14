@@ -9,8 +9,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "UnforgottenPlayerController.h"
-#include "HUD/UnforgottenHUD.h"
+// #include "HUD/UnforgottenHUD.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "TimerManager.h"
 
 
 // Sets default values for this component's properties
@@ -70,12 +71,9 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 
 	if(!EquippedWeapon) return;
 
-	if(Character && bFireButtonPressed)
+	if(bFireButtonPressed)
 	{
-		FHitResult HitResult;
-		TraceUnderCrosshair(HitResult);
-		Character->PlayFireMontage(false); // switch for bIsAiming later
-		EquippedWeapon->Fire(HitTarget);
+		Fire();
 	}
 }
 
@@ -113,6 +111,16 @@ void UCombatComponent::TraceUnderCrosshair(FHitResult& TraceHitResult)
 			ECollisionChannel::ECC_Visibility
 		);
 
+		// If we hit and Actor and it implements our interface
+		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UCrosshairInteractiveInterface>())
+		{
+			HUDPackage.CrosshairColor = FLinearColor::Red;
+		}
+		else
+		{
+			HUDPackage.CrosshairColor = FLinearColor::White;
+		}
+
 		// Set impact point if we don't hit anything
 		if(!TraceHitResult.bBlockingHit)
 		{
@@ -146,8 +154,6 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 		HUD = !HUD ? Cast<AUnforgottenHUD>(Controller->GetHUD()) : HUD;
 		if (HUD)
 		{
-			FHUDPackage HUDPackage;
-			
 			if (EquippedWeapon)
 			{
 				HUDPackage.CenterCrosshair = EquippedWeapon->CenterCrosshair;
@@ -188,4 +194,41 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 		}
 	}
 
+}
+
+void UCombatComponent::StartFireTimer() 
+{
+	if (!EquippedWeapon || !Character) return;
+
+	Character->GetWorldTimerManager().SetTimer(
+		FireTimer,
+		this,
+		&UCombatComponent::FireTimerEnded,
+		EquippedWeapon->FireDelay
+	);
+}
+
+void UCombatComponent::FireTimerEnded() 
+{
+	if (!EquippedWeapon || !Character) return;
+
+	bCanFire = true;
+	if(bFireButtonPressed && EquippedWeapon->bIsAutomatic)
+	{
+		Fire();
+	}
+}
+
+void UCombatComponent::Fire() 
+{
+	if(Character && bCanFire)
+	{
+		bCanFire = false;
+		FHitResult HitResult;
+		TraceUnderCrosshair(HitResult);
+		Character->PlayFireMontage(false); // switch for bIsAiming later
+		EquippedWeapon->Fire(HitTarget);
+		StartFireTimer();
+		CrosshairVelocityMapped = 0.75f;
+	}
 }

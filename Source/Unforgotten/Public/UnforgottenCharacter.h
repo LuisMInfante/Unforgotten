@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Interfaces/CrosshairInteractiveInterface.h"
 #include "UnforgottenCharacter.generated.h"
 
 class UInputComponent;
@@ -17,7 +18,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class AUnforgottenCharacter : public ACharacter
+class AUnforgottenCharacter : public ACharacter, public ICrosshairInteractiveInterface
 {
 	GENERATED_BODY()
 
@@ -95,6 +96,10 @@ protected:
 	void FireButtonPressed();
 	void FireButtonReleased();
 
+	UFUNCTION()
+	void RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
+
+	void UpdateHUDHealth();
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -115,6 +120,15 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	class UAnimMontage* FireWeaponMontage;
+
+	// Player Health
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+	float MaxHealth = 100.f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Player Stats")
+	float CurrentHealth = 100.f;
+
+	class AUnforgottenPlayerController* UnforgottenPlayerController;
 
 public:
 

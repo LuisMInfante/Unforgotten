@@ -12,6 +12,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Weapon/Weapon.h"
 #include "CharacterComponents/CombatComponent.h"
+#include "Unforgotten/Public/UnforgottenPlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -62,6 +63,9 @@ void AUnforgottenCharacter::BeginPlay()
 		}
 	}
 
+	UpdateHUDHealth();
+
+	OnTakeAnyDamage.AddDynamic(this, &AUnforgottenCharacter::RecieveDamage);
 }
 
 void AUnforgottenCharacter::Tick(float DeltaTime)
@@ -91,7 +95,7 @@ void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::Equip);
 
 		// Fire Weapon
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::FireButtonPressed);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AUnforgottenCharacter::FireButtonPressed);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AUnforgottenCharacter::FireButtonReleased);
 
 	}
@@ -185,6 +189,22 @@ void AUnforgottenCharacter::FireButtonReleased()
 	UE_LOG(LogTemp, Warning, TEXT("Fire Button Released!"));
 }
 
+
+void AUnforgottenCharacter::RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser) 
+{
+	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.f, MaxHealth);
+	UpdateHUDHealth();
+}
+
+void AUnforgottenCharacter::UpdateHUDHealth()
+{
+	UnforgottenPlayerController = !UnforgottenPlayerController ? Cast<AUnforgottenPlayerController>(Controller) : UnforgottenPlayerController;
+
+	if (UnforgottenPlayerController)
+	{
+		UnforgottenPlayerController->SetHUDHealth(CurrentHealth, MaxHealth);
+	}
+}
 
 void AUnforgottenCharacter::SetHasRifle(bool bNewHasRifle)
 {
