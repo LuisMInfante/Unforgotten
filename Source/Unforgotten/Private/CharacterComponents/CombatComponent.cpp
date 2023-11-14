@@ -30,7 +30,7 @@ void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	InitializeCarriedAmmo();
 	
 }
 
@@ -63,6 +63,18 @@ void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip)
 
 	EquippedWeapon->SetOwner(Character);
 	EquippedWeapon->SetHUDAmmo();
+
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+	}
+
+	Controller = !Controller ? Cast<AUnforgottenPlayerController>(Character->Controller) : Controller;
+	if (Controller)
+	{
+		Controller->SetHUDCarriedAmmo(CarriedAmmo);
+	}
+
 	EquippedWeapon->ShowPickupWidget(false);
 }
 
@@ -239,4 +251,9 @@ bool UCombatComponent::CanFire()
 	if (!EquippedWeapon) return false;
 
 	return !EquippedWeapon->IsEmpty() || !bCanFire;
+}
+
+void UCombatComponent::InitializeCarriedAmmo() 
+{
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingAssaultRifleAmmo);
 }
