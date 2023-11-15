@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "UnforgottenTypes/CombatState.h"
 #include "UnforgottenCharacterAnimInstance.generated.h"
 
 /**

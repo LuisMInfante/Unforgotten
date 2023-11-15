@@ -50,6 +50,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Crosshairs")
 	UTexture2D* BottomCrosshair;
 
+	// Animations (Hopefully)
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UAnimMontage* ReloadRifleMontage;
+
 	// Auto Fire
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float FireDelay = 0.15f;

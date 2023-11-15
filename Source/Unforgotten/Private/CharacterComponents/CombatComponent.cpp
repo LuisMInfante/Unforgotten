@@ -78,6 +78,34 @@ void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip)
 	EquippedWeapon->ShowPickupWidget(false);
 }
 
+void UCombatComponent::Reload() 
+{
+	if (!Character || !EquippedWeapon) return;
+
+	CombatState = ECombatState::ECS_Reloading;
+	if (CarriedAmmo > 0 && CombatState != ECombatState::ECS_Reloading)
+	{
+		Character->PlayReloadRifleMontage(); 
+	}
+
+	// TODO: need to either figure out how to use AnimNotify with weapon or just call a timer.
+	FinishedReloading();
+}
+
+
+void UCombatComponent::FinishedReloading() 
+{	
+	if(!Character) return;
+
+	CombatState = ECombatState::ECS_Unoccupied;
+
+	if(bFireButtonPressed)
+	{
+		Fire();
+	}
+}
+
+
 void UCombatComponent::FireButtonPressed(bool bPressed) 
 {
 	bFireButtonPressed = bPressed;
@@ -234,7 +262,7 @@ void UCombatComponent::FireTimerEnded()
 
 void UCombatComponent::Fire() 
 {
-	if(Character && CanFire())
+	if(Character && CanFire() && CombatState == ECombatState::ECS_Unoccupied)
 	{
 		bCanFire = false;
 		FHitResult HitResult;
@@ -244,13 +272,15 @@ void UCombatComponent::Fire()
 		StartFireTimer();
 		CrosshairVelocityMapped = 0.75f;
 	}
+
+	// TODO: play sometype of empty mag sound
 }
 
 bool UCombatComponent::CanFire() 
 {
 	if (!EquippedWeapon) return false;
 
-	return !EquippedWeapon->IsEmpty() || !bCanFire;
+	return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
 }
 
 void UCombatComponent::InitializeCarriedAmmo() 

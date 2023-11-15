@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "HUD/UnforgottenHUD.h"
 #include "Unforgotten/Public/Weapon/WeaponTypes.h"
+#include "Unforgotten/Public/UnforgottenTypes/CombatState.h"
 #include "CombatComponent.generated.h"
 
 #define TRACE_LENGTH 80000.f
@@ -25,6 +26,9 @@ public:
 	friend class AUnforgottenCharacter; // *** CHANGE THIS LATER *** (friend gives class FULL access)
 
 	void EquipWeapon(class AWeapon* WeaponToEquip);
+	void Reload();
+	UFUNCTION(BlueprintCallable)
+	void FinishedReloading();
 
 protected:
 	// Called when the game starts
@@ -75,6 +79,7 @@ private:
 	
 	void InitializeCarriedAmmo();
 
+	ECombatState CombatState = ECombatState::ECS_Unoccupied;
 public:	
 
 		

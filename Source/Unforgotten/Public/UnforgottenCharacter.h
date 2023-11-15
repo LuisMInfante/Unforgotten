@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Interfaces/CrosshairInteractiveInterface.h"
+#include "Unforgotten/Public/UnforgottenTypes/CombatState.h"
 #include "UnforgottenCharacter.generated.h"
 
 class UInputComponent;
@@ -49,6 +50,10 @@ class AUnforgottenCharacter : public ACharacter, public ICrosshairInteractiveInt
 	// Fire Weapon Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* FireAction;
+
+	// Reload Weapon Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* ReloadAction;
 	
 public:
 	AUnforgottenCharacter();
@@ -58,6 +63,7 @@ public:
 	friend class CombatComponent; // maybe
 
 	void PlayFireMontage(bool bIsAiming);
+	void PlayReloadRifleMontage();
 
 protected:
 	virtual void BeginPlay();
@@ -96,6 +102,8 @@ protected:
 	void FireButtonPressed();
 	void FireButtonReleased();
 
+	void ReloadButtonPressed();
+
 	UFUNCTION()
 	void RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
 
@@ -118,8 +126,12 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class UCombatComponent* Combat;
 
+	// Animations
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	class UAnimMontage* FireWeaponMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UAnimMontage* ReloadRifleMontage;
 
 	// Player Health
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
@@ -133,6 +145,9 @@ private:
 public:
 
 	FORCEINLINE void SetOverlappingWeapon(AWeapon* Weapon) { OverlappingWeapon = Weapon; }
+	FORCEINLINE float GetCurrentHealth() const { return CurrentHealth; }
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	ECombatState GetCombatState() const;
 
 };
 

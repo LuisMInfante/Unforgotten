@@ -13,6 +13,7 @@
 #include "Weapon/Weapon.h"
 #include "CharacterComponents/CombatComponent.h"
 #include "Unforgotten/Public/UnforgottenPlayerController.h"
+#include "Unforgotten/Public/Weapon/WeaponTypes.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -98,6 +99,8 @@ void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AUnforgottenCharacter::FireButtonPressed);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AUnforgottenCharacter::FireButtonReleased);
 
+		// Reload Weapon
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::ReloadButtonPressed);
 	}
 	else
 	{
@@ -128,6 +131,29 @@ void AUnforgottenCharacter::PlayFireMontage(bool bIsAiming)
 		// Logic for when we implement ADS
 		FName SectionName;
 		SectionName = bIsAiming ? FName("ADS") : FName("Default");
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
+// May have to put this in Weapon.cpp
+void AUnforgottenCharacter::PlayReloadRifleMontage() 
+{
+	if(!Combat || !Combat->EquippedWeapon) return;
+
+	UAnimInstance* AnimInstance = Combat->EquippedWeapon->GetWeaponMesh()->GetAnimInstance();
+	
+	if(AnimInstance && ReloadRifleMontage)
+	{
+		AnimInstance->Montage_Play(ReloadRifleMontage);
+
+		FName SectionName;
+		switch (Combat->EquippedWeapon->GetWeaponType())
+		{
+			case EWeaponType::EWT_AssaultRifle:
+			SectionName = FName("Rifle");
+			break;
+		}
+
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
@@ -189,6 +215,13 @@ void AUnforgottenCharacter::FireButtonReleased()
 	UE_LOG(LogTemp, Warning, TEXT("Fire Button Released!"));
 }
 
+void AUnforgottenCharacter::ReloadButtonPressed() 
+{
+	if (Combat)
+	{
+		Combat->Reload();
+	}
+}
 
 void AUnforgottenCharacter::RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser) 
 {
@@ -214,4 +247,10 @@ void AUnforgottenCharacter::SetHasRifle(bool bNewHasRifle)
 bool AUnforgottenCharacter::GetHasRifle()
 {
 	return bHasRifle;
+}
+
+ECombatState AUnforgottenCharacter::GetCombatState() const
+{
+	if (!Combat) return ECombatState::ECS_MAX;
+	return Combat->CombatState;
 }
