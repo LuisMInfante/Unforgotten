@@ -76,6 +76,11 @@ void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip)
 	}
 
 	EquippedWeapon->ShowPickupWidget(false);
+
+	if (EquippedWeapon->IsEmpty())
+	{
+		Reload();
+	}
 }
 
 void UCombatComponent::Reload() 
@@ -289,6 +294,11 @@ void UCombatComponent::FireTimerEnded()
 	if(bFireButtonPressed && EquippedWeapon->bIsAutomatic)
 	{
 		Fire();
+	}
+
+	if (EquippedWeapon->IsEmpty())
+	{
+		Reload();
 	}
 }
 
