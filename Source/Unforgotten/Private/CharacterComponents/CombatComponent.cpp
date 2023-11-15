@@ -83,10 +83,28 @@ void UCombatComponent::Reload()
 	if (!Character || !EquippedWeapon) return;
 
 	CombatState = ECombatState::ECS_Reloading;
+	int32 ReloadAmount = AmountToReload();
+
 	if (CarriedAmmo > 0 && CombatState != ECombatState::ECS_Reloading)
 	{
 		Character->PlayReloadRifleMontage(); 
 	}
+
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		CarriedAmmoMap[EquippedWeapon->GetWeaponType()] -= ReloadAmount;
+		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+	}
+
+	Controller = !Controller ? Cast<AUnforgottenPlayerController>(Character->Controller) : Controller;
+	if (Controller)
+	{
+		Controller->SetHUDCarriedAmmo(CarriedAmmo);
+		EquippedWeapon->SetHUDAmmo();
+	}
+
+	EquippedWeapon->AddAmmo(-ReloadAmount);
+
 
 	// TODO: need to either figure out how to use AnimNotify with weapon or just call a timer.
 	FinishedReloading();
@@ -105,6 +123,20 @@ void UCombatComponent::FinishedReloading()
 	}
 }
 
+int32 UCombatComponent::AmountToReload() 
+{
+	if (!EquippedWeapon) return 0;
+
+	int32 RoomInMagazine = EquippedWeapon->GetMagazineCapacity() - EquippedWeapon->GetAmmo();
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		int32 AmountOfAmmoCarrying = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+		int32 MinimumToReload = FMath::Min(RoomInMagazine, AmountOfAmmoCarrying);
+		return FMath::Clamp(RoomInMagazine, 0, MinimumToReload);
+	}
+
+	return 0;
+}
 
 void UCombatComponent::FireButtonPressed(bool bPressed) 
 {

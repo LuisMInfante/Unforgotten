@@ -29,6 +29,7 @@ public:
 	void Reload();
 	UFUNCTION(BlueprintCallable)
 	void FinishedReloading();
+	int32 AmountToReload();
 
 protected:
 	// Called when the game starts

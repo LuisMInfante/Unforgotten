@@ -34,6 +34,8 @@ public:
 
 	void SetHUDAmmo();
 
+	void AddAmmo(int32 AmmoToAdd);
+
 	// Crosshair Textures
 	UPROPERTY(EditAnywhere, Category = "Crosshairs")
 	class UTexture2D* CenterCrosshair;
@@ -126,4 +128,6 @@ public:
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 	bool IsEmpty();
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
+	FORCEINLINE int32 GetAmmo() const { return Ammo; }
+	FORCEINLINE int32 GetMagazineCapacity() const { return MagazineCapacity; }
 };
