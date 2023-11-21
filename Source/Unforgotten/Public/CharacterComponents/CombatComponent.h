@@ -77,7 +77,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingAssaultRifleAmmo = 30;
-	
+	UPROPERTY(EditAnywhere)
+	int32 StartingRocketLauncherAmmo = 4;
+		
 	void InitializeCarriedAmmo();
 
 	ECombatState CombatState = ECombatState::ECS_Unoccupied;
