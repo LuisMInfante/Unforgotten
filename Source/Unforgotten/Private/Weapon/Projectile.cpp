@@ -8,6 +8,8 @@
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -25,8 +27,8 @@ AProjectile::AProjectile()
 	CollisionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
 	CollisionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Block);
 
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+	// ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+	// ProjectileMovementComponent->bRotationFollowsVelocity = true;
 
 	ProjectileImpulse = 100.f;
 
@@ -59,6 +61,21 @@ void AProjectile::Tick(float DeltaTime)
 
 }
 
+void AProjectile::StartDestroyTimer() 
+{
+    GetWorldTimerManager().SetTimer(
+        DestroyTimer,
+        this,
+        &AProjectile::DestroyTimerEnded,
+        DestroyTime
+    );
+}
+
+void AProjectile::DestroyTimerEnded() 
+{
+    Destroy();
+}
+
 void AProjectile::Destroyed()
 {
 	Super::Destroyed();
@@ -78,4 +95,45 @@ void AProjectile::Destroyed()
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) 
 {
 	Destroy();
+}
+
+void AProjectile::SpawnTrailSystem() 
+{
+    if (TrailSystem)
+    {
+        TrailSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+            TrailSystem,
+            GetRootComponent(),
+            FName(),
+            GetActorLocation(),
+            GetActorRotation(),
+            EAttachLocation::KeepWorldPosition,
+            false
+        );
+    }
+}
+
+void AProjectile::ExplosionDamage() 
+{	
+	APawn* FiringPawn = GetInstigator();
+    if (FiringPawn)
+    {
+        AController* FiringController = FiringPawn->GetController();
+        if (FiringController)
+        {
+            UGameplayStatics::ApplyRadialDamageWithFalloff(
+                this, // World Context Object
+                Damage, // Base Damage
+                MinimumBlastDamage,
+                GetActorLocation(), // Origin
+                InnerBlastRadius,
+                OuterBlastRadius,
+                1.f, // Damage Falloff
+                UDamageType::StaticClass(), // DamageType Class
+                TArray<AActor*>(), // Ignored Actors
+                this, // Damage Causer
+                FiringController // Instigator controller
+            );
+        }
+    }
 }

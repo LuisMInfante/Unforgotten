@@ -21,10 +21,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Destroyed() override;
+
+	UPROPERTY(EditAnywhere)
+	float InitialSpeed = 15000;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void StartDestroyTimer();
+	void DestroyTimerEnded();
+	void SpawnTrailSystem();
+	void ExplosionDamage();
 
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -41,10 +48,26 @@ protected:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* CollisionBox;
 
-private:
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* TrailSystem;
+
+	UPROPERTY()
+	class UNiagaraComponent* TrailSystemComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ProjectileMesh;
 
 	UPROPERTY(VisibleAnywhere)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY(EditAnywhere)
+	float MinimumBlastDamage = 10.f;
+	UPROPERTY(EditAnywhere)
+	float InnerBlastRadius = 200.f;
+	UPROPERTY(EditAnywhere)
+	float OuterBlastRadius = 500.f;
+
+private:
 
 	float ProjectileImpulse;
 
@@ -52,6 +75,11 @@ private:
 	class UParticleSystem* Tracer;
 
 	class UParticleSystemComponent* TracerComponent;
+
+	FTimerHandle DestroyTimer;
+
+	UPROPERTY(EditAnywhere)
+	float DestroyTime = 3.f;
 
 public:	
 
