@@ -83,6 +83,8 @@ private:
 	int32 StartingPistolAmmo = 15;
 	UPROPERTY(EditAnywhere)
 	int32 StartingSMGAmmo = 20;
+	UPROPERTY(EditAnywhere)
+	int32 StartingShotgunAmmo = 5;
 		
 	void InitializeCarriedAmmo();
 
