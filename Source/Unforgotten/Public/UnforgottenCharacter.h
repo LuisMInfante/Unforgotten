@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Interfaces/CrosshairInteractiveInterface.h"
+#include "Unforgotten/Public/UnforgottenTypes/CombatState.h"
 #include "UnforgottenCharacter.generated.h"
 
 class UInputComponent;
@@ -17,7 +19,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class AUnforgottenCharacter : public ACharacter
+class AUnforgottenCharacter : public ACharacter, public ICrosshairInteractiveInterface
 {
 	GENERATED_BODY()
 
@@ -40,12 +42,34 @@ class AUnforgottenCharacter : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	// Equip Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* EquipAction;
+
+	// Fire Weapon Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
+
+	// Reload Weapon Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* ReloadAction;
 	
 public:
 	AUnforgottenCharacter();
 
+	virtual void PostInitializeComponents() override;
+
+	friend class CombatComponent; // maybe
+
+	void PlayFireMontage(bool bIsAiming);
+	void PlayReloadRifleMontage();
+
 protected:
 	virtual void BeginPlay();
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 public:
 		
@@ -72,6 +96,18 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	// called for equipping weapon
+	void Equip();
+
+	void FireButtonPressed();
+	void FireButtonReleased();
+
+	void ReloadButtonPressed();
+
+	UFUNCTION()
+	void RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
+
+	void UpdateHUDHealth();
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -82,6 +118,36 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+private:
+
+	class AWeapon* OverlappingWeapon;
+
+	UPROPERTY(VisibleAnywhere)
+	class UCombatComponent* Combat;
+
+	// Animations
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UAnimMontage* FireWeaponMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UAnimMontage* ReloadRifleMontage;
+
+	// Player Health
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+	float MaxHealth = 100.f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Player Stats")
+	float CurrentHealth = 100.f;
+
+	class AUnforgottenPlayerController* UnforgottenPlayerController;
+
+public:
+
+	FORCEINLINE void SetOverlappingWeapon(AWeapon* Weapon) { OverlappingWeapon = Weapon; }
+	FORCEINLINE float GetCurrentHealth() const { return CurrentHealth; }
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	ECombatState GetCombatState() const;
 
 };
 

@@ -15,7 +15,13 @@ UCLASS()
 class UNFORGOTTEN_API AUnforgottenPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+public:
+
+	void SetHUDHealth(float CurrentHealth, float MaxHealth);
+
+	void SetHUDWeaponAmmo(int32 Ammo);
 	
+	void SetHUDCarriedAmmo(int32 Ammo);
 protected:
 
 	/** Input Mapping Context to be used for player input */
@@ -28,4 +34,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	// End Actor interface
+
+private:
+
+	class AUnforgottenHUD* UnforgottenHUD;
 };

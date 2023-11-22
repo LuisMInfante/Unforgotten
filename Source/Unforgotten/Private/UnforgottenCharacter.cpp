@@ -10,6 +10,10 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Weapon/Weapon.h"
+#include "CharacterComponents/CombatComponent.h"
+#include "Unforgotten/Public/UnforgottenPlayerController.h"
+#include "Unforgotten/Public/Weapon/WeaponTypes.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -18,6 +22,9 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AUnforgottenCharacter::AUnforgottenCharacter()
 {
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
 	
@@ -39,6 +46,8 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+
 }
 
 void AUnforgottenCharacter::BeginPlay()
@@ -55,8 +64,17 @@ void AUnforgottenCharacter::BeginPlay()
 		}
 	}
 
+	UpdateHUDHealth();
+
+	OnTakeAnyDamage.AddDynamic(this, &AUnforgottenCharacter::RecieveDamage);
 }
 
+void AUnforgottenCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
+}
 //////////////////////////////////////////////////////////////////////////// Input
 
 void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -73,6 +91,16 @@ void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::Look);
+
+		// Equip
+		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::Equip);
+
+		// Fire Weapon
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AUnforgottenCharacter::FireButtonPressed);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AUnforgottenCharacter::FireButtonReleased);
+
+		// Reload Weapon
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AUnforgottenCharacter::ReloadButtonPressed);
 	}
 	else
 	{
@@ -80,6 +108,73 @@ void AUnforgottenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	}
 }
 
+void AUnforgottenCharacter::PostInitializeComponents() 
+{
+	Super::PostInitializeComponents();
+	
+	if(Combat)
+	{
+		Combat->Character = this;
+	}
+}
+
+
+void AUnforgottenCharacter::PlayFireMontage(bool bIsAiming) 
+{
+	if(!Combat || !Combat->EquippedWeapon) return;
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance && FireWeaponMontage)
+	{
+		AnimInstance->Montage_Play(FireWeaponMontage);
+
+		// Logic for when we implement ADS
+		FName SectionName;
+		SectionName = bIsAiming ? FName("ADS") : FName("Default");
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
+// May have to put this in Weapon.cpp
+void AUnforgottenCharacter::PlayReloadRifleMontage() 
+{
+	if(!Combat || !Combat->EquippedWeapon) return;
+
+	UAnimInstance* AnimInstance = Combat->EquippedWeapon->GetWeaponMesh()->GetAnimInstance();
+	
+	if(AnimInstance && ReloadRifleMontage)
+	{
+		AnimInstance->Montage_Play(ReloadRifleMontage);
+
+		FName SectionName;
+		switch (Combat->EquippedWeapon->GetWeaponType())
+		{
+			case EWeaponType::EWT_AssaultRifle:
+				SectionName = FName("Rifle");
+				break;
+			case EWeaponType::EWT_RocketLauncher:
+				SectionName = FName("Rifle");
+				break;
+			case EWeaponType::EWT_Pistol:
+				SectionName = FName("Rifle");
+				break;
+			case EWeaponType::EWT_SubmachineGun:
+				SectionName = FName("Rifle");
+				break;
+			case EWeaponType::EWT_Shotgun:
+				SectionName = FName("Rifle");
+				break;
+			case EWeaponType::EWT_SniperRifle:
+				SectionName = FName("Rifle");
+				break;
+			case EWeaponType::EWT_GrenadeLauncher:
+				SectionName = FName("Rifle");
+				break;
+		}
+
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
 
 void AUnforgottenCharacter::Move(const FInputActionValue& Value)
 {
@@ -107,6 +202,61 @@ void AUnforgottenCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void AUnforgottenCharacter::Equip() 
+{
+	if(Combat)
+	{
+		Combat->EquipWeapon(OverlappingWeapon);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Equip Action Pressed!"));
+}
+
+void AUnforgottenCharacter::FireButtonPressed() 
+{
+	if(Combat)
+	{
+		Combat->FireButtonPressed(true);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Fire Button Pressed!"));
+}
+
+
+void AUnforgottenCharacter::FireButtonReleased() 
+{
+	if(Combat)
+	{
+		Combat->FireButtonPressed(false);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Fire Button Released!"));
+}
+
+void AUnforgottenCharacter::ReloadButtonPressed() 
+{
+	if (Combat)
+	{
+		Combat->Reload();
+	}
+}
+
+void AUnforgottenCharacter::RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser) 
+{
+	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.f, MaxHealth);
+	UpdateHUDHealth();
+}
+
+void AUnforgottenCharacter::UpdateHUDHealth()
+{
+	UnforgottenPlayerController = !UnforgottenPlayerController ? Cast<AUnforgottenPlayerController>(Controller) : UnforgottenPlayerController;
+
+	if (UnforgottenPlayerController)
+	{
+		UnforgottenPlayerController->SetHUDHealth(CurrentHealth, MaxHealth);
+	}
+}
+
 void AUnforgottenCharacter::SetHasRifle(bool bNewHasRifle)
 {
 	bHasRifle = bNewHasRifle;
@@ -115,4 +265,10 @@ void AUnforgottenCharacter::SetHasRifle(bool bNewHasRifle)
 bool AUnforgottenCharacter::GetHasRifle()
 {
 	return bHasRifle;
+}
+
+ECombatState AUnforgottenCharacter::GetCombatState() const
+{
+	if (!Combat) return ECombatState::ECS_MAX;
+	return Combat->CombatState;
 }
