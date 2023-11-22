@@ -22,10 +22,61 @@ void AShotgun::Fire(const FVector& HitTarget)
         FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
         FVector Start = SocketTransform.GetLocation();
 
+        TMap<AUnforgottenCharacter*, uint32> HitMap;
         // Randomly generate spread based on number of pellets
         for (uint32 i = 0; i < NumberOfShells; i++)
         {
-            FVector End = TraceEndWithScatter(Start, HitTarget);
+            FHitResult FireHit;
+            WeaponTraceHit(Start, HitTarget, FireHit);
+
+            AUnforgottenCharacter* UnforgottenCharacter = Cast<AUnforgottenCharacter>(FireHit.GetActor());
+            if (UnforgottenCharacter)
+            {   
+                if (HitMap.Contains(UnforgottenCharacter))
+                {
+                    HitMap[UnforgottenCharacter]++; // add number of hits if character is in our map
+                }
+                else
+                {
+                    HitMap.Emplace(UnforgottenCharacter, 1); // add new damaged character to map with a confirmed hit
+                }
+            } 
+
+            if (ImpactParticles)
+            {
+                UGameplayStatics::SpawnEmitterAtLocation(
+                    GetWorld(),
+                    ImpactParticles,
+                    FireHit.ImpactPoint,
+                    FireHit.ImpactNormal.Rotation()
+                );
+            }
+
+            if (HitSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(
+                    this,
+                    HitSound,
+                    FireHit.ImpactPoint,
+                    .5f,
+                    FMath::FRandRange(-0.5f, 0.5f)
+                );
+            }         
+        }
+
+        // Iterate through map can apply damage to each actor according to confirmed hits
+        for (auto HitPair : HitMap)
+        {
+            if (HitPair.Key && InstigatorController)
+            {
+                UGameplayStatics::ApplyDamage(
+                    HitPair.Key,
+                    Damage * HitPair.Value,
+                    InstigatorController,
+                    this,
+                    UDamageType::StaticClass()
+                );   
+            }
         }
     }
 }
