@@ -12,6 +12,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Weapon/Weapon.h"
 #include "CharacterComponents/CombatComponent.h"
+#include "CharacterComponents/BuffComponent.h"
 #include "Unforgotten/Public/UnforgottenPlayerController.h"
 #include "Unforgotten/Public/Weapon/WeaponTypes.h"
 
@@ -47,6 +48,8 @@ AUnforgottenCharacter::AUnforgottenCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+
+	Buff = CreateDefaultSubobject<UBuffComponent>(TEXT("BuffComponent"));
 
 }
 
@@ -112,9 +115,14 @@ void AUnforgottenCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	
-	if(Combat)
+	if (Combat)
 	{
 		Combat->Character = this;
+	}
+
+	if (Buff)
+	{
+		Buff->Character = this;
 	}
 }
 

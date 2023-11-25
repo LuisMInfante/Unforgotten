@@ -47,7 +47,7 @@ void APickup::Tick(float DeltaTime)
 
 	if (PickupMesh)
 	{
-		PickupMesh->AddLocalRotation(FRotator(0.f, BaseTurnRate * DeltaTime, 0.f));
+		PickupMesh->AddWorldRotation(FRotator(0.f, BaseTurnRate * DeltaTime, 0.f));
 	}
 }
 
