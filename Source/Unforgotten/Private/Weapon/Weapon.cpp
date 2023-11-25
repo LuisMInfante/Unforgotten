@@ -25,6 +25,9 @@ AWeapon::AWeapon()
 	WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_PURPLE);
+	WeaponMesh->MarkRenderStateDirty();
+	EnableCustomDepth(true);
 
 	OverlapVolume = CreateDefaultSubobject<USphereComponent>(TEXT("OverlapVolume"));
 	OverlapVolume->SetupAttachment(RootComponent);
@@ -159,3 +162,13 @@ bool AWeapon::IsEmpty()
 {
 	return Ammo <= 0;
 }
+
+void AWeapon::EnableCustomDepth(bool bEnable) 
+{
+	if (WeaponMesh)
+	{
+		WeaponMesh->SetRenderCustomDepth(bEnable);
+	}
+}
+
+// Weapon States

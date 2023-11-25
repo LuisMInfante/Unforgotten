@@ -26,10 +26,15 @@ public:
 	friend class AUnforgottenCharacter; // *** CHANGE THIS LATER *** (friend gives class FULL access)
 
 	void EquipWeapon(class AWeapon* WeaponToEquip);
+
 	void Reload();
+
 	UFUNCTION(BlueprintCallable)
 	void FinishedReloading();
+
 	int32 AmountToReload();
+
+	void PickupAmmo(EWeaponType WeaponType, int32 AmountOfAmmo);
 
 protected:
 	// Called when the game starts
@@ -40,6 +45,8 @@ protected:
 	void TraceUnderCrosshair(FHitResult& TraceHitResult);
 
 	void SetHUDCrosshairs(float DeltaTime);
+
+	void UpdateCarriedAmmo();
 
 private:
 
@@ -76,6 +83,9 @@ private:
 	TMap<EWeaponType, int32> CarriedAmmoMap;
 
 	UPROPERTY(EditAnywhere)
+	int32 MaxCarriedAmmo = 500;
+
+	UPROPERTY(EditAnywhere)
 	int32 StartingAssaultRifleAmmo = 30;
 	UPROPERTY(EditAnywhere)
 	int32 StartingRocketLauncherAmmo = 4;
@@ -95,5 +105,4 @@ private:
 	ECombatState CombatState = ECombatState::ECS_Unoccupied;
 public:	
 
-		
 };

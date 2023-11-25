@@ -115,6 +115,20 @@ void UCombatComponent::Reload()
 	FinishedReloading();
 }
 
+void UCombatComponent::UpdateCarriedAmmo()
+{
+	if (!EquippedWeapon) return;
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+	}
+
+	Controller = Controller == nullptr ? Cast<AUnforgottenPlayerController>(Character->Controller) : Controller;
+	if (Controller)
+	{
+		Controller->SetHUDCarriedAmmo(CarriedAmmo);
+	}
+}
 
 void UCombatComponent::FinishedReloading() 
 {	
@@ -335,3 +349,19 @@ void UCombatComponent::InitializeCarriedAmmo()
 	CarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, StartingSniperRifleAmmo);
 	CarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, StartingGrenadeLauncherAmmo);
 }
+
+void UCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmountOfAmmo) 
+{
+	if (CarriedAmmoMap.Contains(WeaponType))
+	{
+		CarriedAmmoMap[WeaponType] += FMath::Clamp(CarriedAmmoMap[WeaponType] + AmountOfAmmo, 0, MaxCarriedAmmo);
+
+		UpdateCarriedAmmo();
+	}
+
+	if (EquippedWeapon && EquippedWeapon->IsEmpty() && EquippedWeapon->GetWeaponType() == WeaponType)
+	{
+		Reload();
+	}
+}
+
