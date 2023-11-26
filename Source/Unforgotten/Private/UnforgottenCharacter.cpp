@@ -259,8 +259,23 @@ void AUnforgottenCharacter::ReloadButtonPressed()
 
 void AUnforgottenCharacter::RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser) 
 {
-	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.f, MaxHealth);
+	float DamageToHealth = Damage;
+	if (CurrentShields > 0.f)
+	{
+		if (CurrentShields >= Damage) // Shields can absorb all damage done
+		{
+			CurrentShields = FMath::Clamp(CurrentShields - Damage, 0.f, MaxShields);
+			DamageToHealth = 0;
+		}
+		else
+		{
+			DamageToHealth = FMath::Clamp(DamageToHealth - CurrentShields, 0.f, Damage);
+			CurrentShields = 0.f;
+		}
+	}
+	CurrentHealth = FMath::Clamp(CurrentHealth - DamageToHealth, 0.f, MaxHealth);
 	UpdateHUDHealth();
+	UpdateHUDShields();
 }
 
 void AUnforgottenCharacter::UpdateHUDHealth()

@@ -45,12 +45,15 @@ private:
 
 	class AUnforgottenHUD* UnforgottenHUD;
 
-	// UPROPERTY()
-	// class UCharacterOverlay* CharacterOverlay;
-	// bool bInitializeCharacterOverlay = false;
+	UPROPERTY()
+	class UCharacterOverlay* CharacterOverlay;
+	bool bInitializeCharacterOverlay = false;
 
-	// float HUDCurrentHealth = 100.f;
-	// float HUDMaxHealth = 100.f;
-	// float HUDCurrentShields = 100.f;
-	// float HUDMaxShields = 100.f;
+	float HUDCurrentHealth = 100.f;
+	float HUDMaxHealth = 100.f;
+	bool bInitializeHealth = false;
+	
+	float HUDCurrentShields = 100.f;
+	float HUDMaxShields = 100.f;
+	bool bInitializeShields = false;
 };

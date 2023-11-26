@@ -28,23 +28,23 @@ void AUnforgottenPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// PollInit();
+	PollInit();
 }
 
 void AUnforgottenPlayerController::PollInit()
 {
-	// if (!CharacterOverlay)
-	// {
-	// 	if (UnforgottenHUD && UnforgottenHUD->CharacterOverlay)
-	// 	{
-	// 		CharacterOverlay = UnforgottenHUD->CharacterOverlay;
-	// 		if (CharacterOverlay)
-	// 		{
-	// 			SetHUDHealth(HUDCurrentHealth, HUDMaxHealth);
-	// 			SetHUDShields(HUDCurrentShields, HUDMaxShields);
-	// 		}
-	// 	}
-	// }
+	if (!CharacterOverlay)
+	{
+		if (UnforgottenHUD && UnforgottenHUD->CharacterOverlay)
+		{
+			CharacterOverlay = UnforgottenHUD->CharacterOverlay;
+			if (CharacterOverlay)
+			{
+				if (bInitializeHealth) SetHUDHealth(HUDCurrentHealth, HUDMaxHealth);
+				if (bInitializeShields) SetHUDShields(HUDCurrentShields, HUDMaxShields);
+			}
+		}
+	}
 }
 
 void AUnforgottenPlayerController::SetHUDHealth(float CurrentHealth, float MaxHealth) 
@@ -64,12 +64,12 @@ void AUnforgottenPlayerController::SetHUDHealth(float CurrentHealth, float MaxHe
 		FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(CurrentHealth), FMath::CeilToInt(MaxHealth));
 		UnforgottenHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
 	}
-	// else
-	// {
-	// 	bInitializeCharacterOverlay = true;
-	// 	HUDCurrentHealth = CurrentHealth;
-	// 	HUDMaxHealth = MaxHealth;
-	// }
+	else
+	{
+		bInitializeHealth = true;
+		HUDCurrentHealth = CurrentHealth;
+		HUDMaxHealth = MaxHealth;
+	}
 }
 
 void AUnforgottenPlayerController::SetHUDShields(float CurrentShields, float MaxShields) 
@@ -89,12 +89,12 @@ void AUnforgottenPlayerController::SetHUDShields(float CurrentShields, float Max
 		FString ShieldText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(CurrentShields), FMath::CeilToInt(MaxShields));
 		UnforgottenHUD->CharacterOverlay->ShieldText->SetText(FText::FromString(ShieldText));
 	}
-	// else
-	// {
-	// 	bInitializeCharacterOverlay = true;
-	// 	HUDCurrentShields = CurrentShields;
-	// 	HUDMaxShields = MaxShields;
-	// }
+	else
+	{
+		bInitializeShields = true;
+		HUDCurrentShields = CurrentShields;
+		HUDMaxShields = MaxShields;
+	}
 }
 
 void AUnforgottenPlayerController::SetHUDWeaponAmmo(int32 Ammo) 
