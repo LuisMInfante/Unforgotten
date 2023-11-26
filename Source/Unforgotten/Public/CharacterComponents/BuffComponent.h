@@ -25,6 +25,9 @@ public:
 
 	void BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime);
 	void SetInitialSpeed(float BaseSpeed, float CrouchSpeed);
+
+	void BuffJump(float BuffJumpVelocity, float BuffTime);
+	void SetInitialJumpVelocity(float Velocity);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -45,6 +48,11 @@ private:
 	void ResetSpeed();
 	float InitialBaseSpeed;
 	float InitialCrouchSpeed;
+
+	// Jump buff
+	FTimerHandle JumpBuffTimer;
+	void ResetJump();
+	float InitialJumpVelocity;
 
 public:	
 

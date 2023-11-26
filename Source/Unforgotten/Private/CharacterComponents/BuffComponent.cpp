@@ -88,3 +88,32 @@ void UBuffComponent::ResetSpeed()
 	Character->GetCharacterMovement()->MaxWalkSpeedCrouched = InitialCrouchSpeed;
 }
 
+void UBuffComponent::SetInitialJumpVelocity(float Velocity) 
+{
+	InitialJumpVelocity = Velocity;
+}
+
+void UBuffComponent::BuffJump(float BuffJumpVelocity, float BuffTime) 
+{
+	if (!Character) return;
+
+	Character->GetWorldTimerManager().SetTimer(
+		JumpBuffTimer,
+		this,
+		&UBuffComponent::ResetJump,
+		BuffTime
+	);
+
+	if (Character->GetCharacterMovement())
+	{
+		Character->GetCharacterMovement()->JumpZVelocity = BuffJumpVelocity;
+	}
+}
+
+void UBuffComponent::ResetJump() 
+{
+	if (!Character || !Character->GetCharacterMovement()) return;
+
+	Character->GetCharacterMovement()->JumpZVelocity = InitialJumpVelocity;
+}
+
