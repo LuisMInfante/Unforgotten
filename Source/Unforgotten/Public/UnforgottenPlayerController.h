@@ -17,7 +17,13 @@ class UNFORGOTTEN_API AUnforgottenPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 
+	virtual void Tick(float DeltaTime) override;
+
+	void PollInit();
+
 	void SetHUDHealth(float CurrentHealth, float MaxHealth);
+
+	void SetHUDShields(float CurrentShields, float MaxShields);
 
 	void SetHUDWeaponAmmo(int32 Ammo);
 	
@@ -38,4 +44,13 @@ protected:
 private:
 
 	class AUnforgottenHUD* UnforgottenHUD;
+
+	// UPROPERTY()
+	// class UCharacterOverlay* CharacterOverlay;
+	// bool bInitializeCharacterOverlay = false;
+
+	// float HUDCurrentHealth = 100.f;
+	// float HUDMaxHealth = 100.f;
+	// float HUDCurrentShields = 100.f;
+	// float HUDMaxShields = 100.f;
 };

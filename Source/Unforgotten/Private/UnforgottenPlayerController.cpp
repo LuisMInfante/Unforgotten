@@ -18,12 +18,34 @@ void AUnforgottenPlayerController::BeginPlay()
 		// add the mapping context so we get controls
 		Subsystem->AddMappingContext(InputMappingContext, 0);
 
-		UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
+		// UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 	}
 
 	UnforgottenHUD = Cast<AUnforgottenHUD>(GetHUD());
 }
 
+void AUnforgottenPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// PollInit();
+}
+
+void AUnforgottenPlayerController::PollInit()
+{
+	// if (!CharacterOverlay)
+	// {
+	// 	if (UnforgottenHUD && UnforgottenHUD->CharacterOverlay)
+	// 	{
+	// 		CharacterOverlay = UnforgottenHUD->CharacterOverlay;
+	// 		if (CharacterOverlay)
+	// 		{
+	// 			SetHUDHealth(HUDCurrentHealth, HUDMaxHealth);
+	// 			SetHUDShields(HUDCurrentShields, HUDMaxShields);
+	// 		}
+	// 	}
+	// }
+}
 
 void AUnforgottenPlayerController::SetHUDHealth(float CurrentHealth, float MaxHealth) 
 {
@@ -42,6 +64,37 @@ void AUnforgottenPlayerController::SetHUDHealth(float CurrentHealth, float MaxHe
 		FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(CurrentHealth), FMath::CeilToInt(MaxHealth));
 		UnforgottenHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
 	}
+	// else
+	// {
+	// 	bInitializeCharacterOverlay = true;
+	// 	HUDCurrentHealth = CurrentHealth;
+	// 	HUDMaxHealth = MaxHealth;
+	// }
+}
+
+void AUnforgottenPlayerController::SetHUDShields(float CurrentShields, float MaxShields) 
+{
+	// if hud is null then cast to hud
+	UnforgottenHUD = !UnforgottenHUD ? Cast<AUnforgottenHUD>(GetHUD()) : UnforgottenHUD;
+
+	bool bHUDIsValid = UnforgottenHUD && 
+					   UnforgottenHUD->CharacterOverlay && 
+					   UnforgottenHUD->CharacterOverlay->ShieldBar && 
+					   UnforgottenHUD->CharacterOverlay->ShieldText;
+
+	if(bHUDIsValid)
+	{
+		const float ShieldPercentage = CurrentShields / MaxShields;
+		UnforgottenHUD->CharacterOverlay->ShieldBar->SetPercent(ShieldPercentage);
+		FString ShieldText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(CurrentShields), FMath::CeilToInt(MaxShields));
+		UnforgottenHUD->CharacterOverlay->ShieldText->SetText(FText::FromString(ShieldText));
+	}
+	// else
+	// {
+	// 	bInitializeCharacterOverlay = true;
+	// 	HUDCurrentShields = CurrentShields;
+	// 	HUDMaxShields = MaxShields;
+	// }
 }
 
 void AUnforgottenPlayerController::SetHUDWeaponAmmo(int32 Ammo) 

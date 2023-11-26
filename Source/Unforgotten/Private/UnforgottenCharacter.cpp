@@ -69,6 +69,7 @@ void AUnforgottenCharacter::BeginPlay()
 	}
 
 	UpdateHUDHealth();
+	UpdateHUDShields();
 
 	OnTakeAnyDamage.AddDynamic(this, &AUnforgottenCharacter::RecieveDamage);
 }
@@ -224,7 +225,7 @@ void AUnforgottenCharacter::Equip()
 		Combat->EquipWeapon(OverlappingWeapon);
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Equip Action Pressed!"));
+	// UE_LOG(LogTemp, Warning, TEXT("Equip Action Pressed!"));
 }
 
 void AUnforgottenCharacter::FireButtonPressed() 
@@ -234,7 +235,7 @@ void AUnforgottenCharacter::FireButtonPressed()
 		Combat->FireButtonPressed(true);
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Fire Button Pressed!"));
+	// UE_LOG(LogTemp, Warning, TEXT("Fire Button Pressed!"));
 }
 
 
@@ -245,7 +246,7 @@ void AUnforgottenCharacter::FireButtonReleased()
 		Combat->FireButtonPressed(false);
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Fire Button Released!"));
+	// UE_LOG(LogTemp, Warning, TEXT("Fire Button Released!"));
 }
 
 void AUnforgottenCharacter::ReloadButtonPressed() 
@@ -269,6 +270,16 @@ void AUnforgottenCharacter::UpdateHUDHealth()
 	if (UnforgottenPlayerController)
 	{
 		UnforgottenPlayerController->SetHUDHealth(CurrentHealth, MaxHealth);
+	}
+}
+
+void AUnforgottenCharacter::UpdateHUDShields()
+{
+	UnforgottenPlayerController = !UnforgottenPlayerController ? Cast<AUnforgottenPlayerController>(Controller) : UnforgottenPlayerController;
+
+	if (UnforgottenPlayerController)
+	{
+		UnforgottenPlayerController->SetHUDShields(CurrentShields, MaxShields);
 	}
 }
 

@@ -90,6 +90,7 @@ public:
 	bool GetHasRifle();
 
 	void UpdateHUDHealth();
+	void UpdateHUDShields();
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -142,6 +143,13 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Player Stats")
 	float CurrentHealth = 100.f;
+
+	// Player Shields
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+	float MaxShields = 100.f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Player Stats")
+	float CurrentShields = 100.f;
 
 	class AUnforgottenPlayerController* UnforgottenPlayerController;
 
