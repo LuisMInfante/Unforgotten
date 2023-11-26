@@ -21,14 +21,23 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void Heal(float HealAmount, float HealTime);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	void HealingRampUp(float DeltaTime);
 private:
 
 	UPROPERTY()
 	class AUnforgottenCharacter* Character;
+
+	bool bHealing = false;
+	
+	float HealingRate = 0.f;
+
+	float AmountToHeal = 0.f;
 public:	
 
 };

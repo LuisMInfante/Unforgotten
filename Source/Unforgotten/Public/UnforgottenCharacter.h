@@ -89,6 +89,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
 
+	void UpdateHUDHealth();
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -107,7 +108,6 @@ protected:
 	UFUNCTION()
 	void RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
 
-	void UpdateHUDHealth();
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -149,9 +149,11 @@ public:
 
 	FORCEINLINE void SetOverlappingWeapon(AWeapon* Weapon) { OverlappingWeapon = Weapon; }
 	FORCEINLINE float GetCurrentHealth() const { return CurrentHealth; }
+	FORCEINLINE void SetCurrentHealth(float Amount) { CurrentHealth = Amount; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 	ECombatState GetCombatState() const;
 	FORCEINLINE UCombatComponent* GetCombatComponent() const { return Combat; }
+	FORCEINLINE UBuffComponent* GetBuff() const { return Buff; }
 
 };
 
