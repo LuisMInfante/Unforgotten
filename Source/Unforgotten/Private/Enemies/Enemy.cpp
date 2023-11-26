@@ -60,6 +60,8 @@ void AEnemy::BulletHit_Implementation(FHitResult HitResult)
 			true
 		);
 	}
+
+	ShowHealthBar();
 }
 
 float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, AController* EventInstigator, AActor* DamageCauser) 
@@ -74,4 +76,15 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageE
 	}
 
 	return DamageAmount;
+}
+
+void AEnemy::ShowHealthBar_Implementation() 
+{
+	GetWorldTimerManager().ClearTimer(HealthBarTimer);
+	GetWorldTimerManager().SetTimer(
+		HealthBarTimer, 
+		this, 
+		&AEnemy::HideHealthBar,
+		HealthBarDisplayTime
+	);
 }
