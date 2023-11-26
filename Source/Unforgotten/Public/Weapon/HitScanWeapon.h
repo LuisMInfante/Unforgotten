@@ -54,4 +54,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
 	bool bUseScatter = false;
+
+public:
+
+	FORCEINLINE float GetDamage() const { return Damage; }
 };

@@ -10,6 +10,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapon/WeaponTypes.h"
 #include "DrawDebugHelpers.h"
+#include "Enemies/Enemy.h"
+#include "Interfaces/BulletHitInterface.h"
 
 void AHitScanWeapon::Fire(const FVector& HitTarget) 
 {
@@ -37,6 +39,27 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
                 this,
                 UDamageType::StaticClass()
             );
+        }
+
+        AEnemy* HitEnemy = Cast<AEnemy>(FireHit.GetActor());
+        if (HitEnemy)
+		{
+			IBulletHitInterface* BulletHitInterface = Cast<IBulletHitInterface>(FireHit.GetActor());
+			if (BulletHitInterface)
+			{
+				BulletHitInterface->BulletHit_Implementation(FireHit);
+			}
+
+			if (HitEnemy)
+			{
+				UGameplayStatics::ApplyDamage(
+					FireHit.GetActor(),
+					Damage,
+                    InstigatorController,
+                    this,
+                    UDamageType::StaticClass()
+				);
+		    }
         }
 
         if (ImpactParticles)

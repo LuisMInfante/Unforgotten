@@ -13,6 +13,7 @@
 #include "Interfaces/BulletHitInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
+#include "Enemies/Enemy.h"
 
 
 // Sets default values for this component's properties
@@ -221,14 +222,8 @@ void UCombatComponent::TraceUnderCrosshair(FHitResult& TraceHitResult)
 		else // We hit something in range
 		{
 			HitTarget = TraceHitResult.ImpactPoint;
-			if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UBulletHitInterface>())
-			{
-				IBulletHitInterface* BulletHitInterface = Cast<IBulletHitInterface>(TraceHitResult.GetActor());
-				if (BulletHitInterface)
-				{
-					BulletHitInterface->BulletHit_Implementation(TraceHitResult);
-				}
-			}
+			
+		}
 			// DrawDebugSphere(
 			// 	GetWorld(),
 			// 	TraceHitResult.ImpactPoint,
@@ -237,7 +232,7 @@ void UCombatComponent::TraceUnderCrosshair(FHitResult& TraceHitResult)
 			// 	FColor::Red,
 			// 	false
 			// );
-		}
+		
 	}
 }
 

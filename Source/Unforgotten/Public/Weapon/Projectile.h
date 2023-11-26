@@ -83,4 +83,5 @@ private:
 
 public:	
 
+	FORCEINLINE float GetDamage() const { return Damage; }
 };

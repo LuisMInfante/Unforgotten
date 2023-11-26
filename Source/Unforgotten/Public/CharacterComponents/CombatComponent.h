@@ -36,6 +36,7 @@ public:
 
 	void PickupAmmo(EWeaponType WeaponType, int32 AmountOfAmmo);
 
+	void SetHUDCrosshairs(float DeltaTime);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -43,8 +44,6 @@ protected:
 	void FireButtonPressed(bool bPressed);
 
 	void TraceUnderCrosshair(FHitResult& TraceHitResult);
-
-	void SetHUDCrosshairs(float DeltaTime);
 
 	void UpdateCarriedAmmo();
 

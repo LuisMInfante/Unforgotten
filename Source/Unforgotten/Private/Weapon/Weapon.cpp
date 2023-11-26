@@ -12,6 +12,7 @@
 #include "Weapon/Casing.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Unforgotten/Public/UnforgottenPlayerController.h"
+#include "CharacterComponents/CombatComponent.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -59,6 +60,10 @@ void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (UnforgottenOwnerCharacter)
+	{
+		UnforgottenOwnerCharacter->GetCombatComponent()->SetHUDCrosshairs(DeltaTime);
+	}
 }
 
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) 

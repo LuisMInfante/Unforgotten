@@ -7,11 +7,13 @@
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
-AEnemy::AEnemy()
+AEnemy::AEnemy() :
+	CurrentHealth(100.f),
+	MaxHealth(100.f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 }
 
@@ -58,4 +60,18 @@ void AEnemy::BulletHit_Implementation(FHitResult HitResult)
 			true
 		);
 	}
+}
+
+float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, AController* EventInstigator, AActor* DamageCauser) 
+{
+	if (CurrentHealth - DamageAmount <= 0.f)
+	{
+		CurrentHealth = 0.f;
+	}
+	else
+	{
+		CurrentHealth -= DamageAmount;
+	}
+
+	return DamageAmount;
 }
