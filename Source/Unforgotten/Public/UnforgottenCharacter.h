@@ -156,9 +156,15 @@ private:
 public:
 
 	FORCEINLINE void SetOverlappingWeapon(AWeapon* Weapon) { OverlappingWeapon = Weapon; }
+
 	FORCEINLINE float GetCurrentHealth() const { return CurrentHealth; }
 	FORCEINLINE void SetCurrentHealth(float Amount) { CurrentHealth = Amount; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+
+	FORCEINLINE float GetCurrentShields() const { return CurrentShields; }
+	FORCEINLINE void SetCurrentShields(float Amount) { CurrentShields = Amount; }
+	FORCEINLINE float GetMaxShields() const { return MaxShields; }
+
 	ECombatState GetCombatState() const;
 	FORCEINLINE UCombatComponent* GetCombatComponent() const { return Combat; }
 	FORCEINLINE UBuffComponent* GetBuff() const { return Buff; }
