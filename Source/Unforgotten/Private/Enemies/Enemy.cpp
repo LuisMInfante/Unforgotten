@@ -39,6 +39,11 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AEnemy::Die() 
+{
+	HideHealthBar();
+}
+
 void AEnemy::BulletHit_Implementation(FHitResult HitResult) 
 {
 	if (ImpactSound)
@@ -69,6 +74,7 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageE
 	if (CurrentHealth - DamageAmount <= 0.f)
 	{
 		CurrentHealth = 0.f;
+		Die();
 	}
 	else
 	{
