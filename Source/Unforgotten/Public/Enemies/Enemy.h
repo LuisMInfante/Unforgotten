@@ -38,6 +38,8 @@ protected:
 	void HideHealthBar();
 
 	void Die();
+
+	void PlayHitMontage(FName Section, float PlayRate = 1.0f);
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
@@ -56,6 +58,8 @@ private:
 
 	FTimerHandle HealthBarTimer;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* HitMontage;
 public:	
 
 };
