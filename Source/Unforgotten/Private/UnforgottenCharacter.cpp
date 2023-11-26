@@ -13,6 +13,7 @@
 #include "Weapon/Weapon.h"
 #include "CharacterComponents/CombatComponent.h"
 #include "CharacterComponents/BuffComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Unforgotten/Public/UnforgottenPlayerController.h"
 #include "Unforgotten/Public/Weapon/WeaponTypes.h"
 
@@ -123,6 +124,10 @@ void AUnforgottenCharacter::PostInitializeComponents()
 	if (Buff)
 	{
 		Buff->Character = this;
+		Buff->SetInitialSpeed(
+			GetCharacterMovement()->MaxWalkSpeed, 
+			GetCharacterMovement()->MaxWalkSpeedCrouched
+		);
 	}
 }
 

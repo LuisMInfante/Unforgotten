@@ -23,6 +23,8 @@ public:
 
 	void Heal(float HealAmount, float HealTime);
 
+	void BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime);
+	void SetInitialSpeed(float BaseSpeed, float CrouchSpeed);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -33,11 +35,17 @@ private:
 	UPROPERTY()
 	class AUnforgottenCharacter* Character;
 
+	// Healing
 	bool bHealing = false;
-	
 	float HealingRate = 0.f;
-
 	float AmountToHeal = 0.f;
+
+	// Speed buff
+	FTimerHandle SpeedBuffTimer;
+	void ResetSpeed();
+	float InitialBaseSpeed;
+	float InitialCrouchSpeed;
+
 public:	
 
 };

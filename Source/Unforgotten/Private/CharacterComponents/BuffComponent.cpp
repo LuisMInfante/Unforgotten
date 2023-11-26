@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CharacterComponents/BuffComponent.h"
 #include "UnforgottenCharacter.h"
+#include "CharacterComponents/BuffComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
 UBuffComponent::UBuffComponent()
@@ -24,6 +25,11 @@ void UBuffComponent::BeginPlay()
 	
 }
 
+void UBuffComponent::SetInitialSpeed(float BaseSpeed, float CrouchSpeed) 
+{
+	InitialBaseSpeed = BaseSpeed;
+	InitialCrouchSpeed = CrouchSpeed;
+}
 
 // Called every frame
 void UBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -54,5 +60,31 @@ void UBuffComponent::HealingRampUp(float DeltaTime)
 		bHealing = false;
 		AmountToHeal = 0.f;
 	}
+}
+
+void UBuffComponent::BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime) 
+{
+	if (!Character) return;
+
+	Character->GetWorldTimerManager().SetTimer(
+		SpeedBuffTimer,
+		this,
+		&UBuffComponent::ResetSpeed,
+		BuffTime
+	);
+
+	if (Character->GetCharacterMovement())
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = BuffBaseSpeed;
+		Character->GetCharacterMovement()->MaxWalkSpeedCrouched = BuffCrouchSpeed;
+	}
+}
+
+void UBuffComponent::ResetSpeed() 
+{
+	if (!Character || !Character->GetCharacterMovement()) return;
+
+	Character->GetCharacterMovement()->MaxWalkSpeed = InitialBaseSpeed;
+	Character->GetCharacterMovement()->MaxWalkSpeedCrouched = InitialCrouchSpeed;
 }
 
