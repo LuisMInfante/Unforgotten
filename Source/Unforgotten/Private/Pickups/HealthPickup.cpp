@@ -25,11 +25,11 @@ void AHealthPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
     {
         UBuffComponent* Buff = UnforgottenCharacter->GetBuff();
 
-        if (Buff)
+        if (Buff && UnforgottenCharacter->GetCurrentHealth() < UnforgottenCharacter->GetMaxHealth())
         {
             Buff->Heal(HealAmount, HealTime);
+            Destroy();
         }
     }
     
-    Destroy();
 }

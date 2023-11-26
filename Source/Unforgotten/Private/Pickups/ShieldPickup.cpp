@@ -20,11 +20,11 @@ void AShieldPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
     {
         UBuffComponent* Buff = UnforgottenCharacter->GetBuff();
 
-        if (Buff)
+        if (Buff && UnforgottenCharacter->GetCurrentShields() < UnforgottenCharacter->GetMaxShields())
         {
             Buff->RechargeShields(ShieldRechargeAmount, ShieldRechargeTime);
+            Destroy();
         }
     }
     
-    Destroy();
 }

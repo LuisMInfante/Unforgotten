@@ -42,7 +42,12 @@ void APickup::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	OverlapSphere->OnComponentBeginOverlap.AddDynamic(this, &APickup::OnSphereOverlap);
+	GetWorldTimerManager().SetTimer(
+		BindOverlapTimer,
+		this,
+		&APickup::BindOverlapTimerFinished,
+		BindOverlapTime
+	);
 }
 
 // Called every frame
@@ -90,3 +95,7 @@ void APickup::Destroyed()
     }
 }
 
+void APickup::BindOverlapTimerFinished() 
+{
+	OverlapSphere->OnComponentBeginOverlap.AddDynamic(this, &APickup::OnSphereOverlap);
+}
