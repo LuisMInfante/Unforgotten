@@ -205,7 +205,7 @@ void UCombatComponent::TraceUnderCrosshair(FHitResult& TraceHitResult)
 		// If we hit and Actor and it implements our interface
 		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UBulletHitInterface>())
 		{
-			HUDPackage.CrosshairColor = FLinearColor::Red;
+			// HUDPackage.CrosshairColor = FLinearColor::Red;
 		}
 		else
 		{
@@ -221,7 +221,14 @@ void UCombatComponent::TraceUnderCrosshair(FHitResult& TraceHitResult)
 		else // We hit something in range
 		{
 			HitTarget = TraceHitResult.ImpactPoint;
-
+			if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UBulletHitInterface>())
+			{
+				IBulletHitInterface* BulletHitInterface = Cast<IBulletHitInterface>(TraceHitResult.GetActor());
+				if (BulletHitInterface)
+				{
+					BulletHitInterface->BulletHit_Implementation(TraceHitResult);
+				}
+			}
 			// DrawDebugSphere(
 			// 	GetWorld(),
 			// 	TraceHitResult.ImpactPoint,
