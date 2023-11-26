@@ -10,6 +10,7 @@
 #include "DrawDebugHelpers.h"
 #include "UnforgottenPlayerController.h"
 // #include "HUD/UnforgottenHUD.h"
+#include "Interfaces/BulletHitInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
 
@@ -20,8 +21,6 @@ UCombatComponent::UCombatComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -204,7 +203,7 @@ void UCombatComponent::TraceUnderCrosshair(FHitResult& TraceHitResult)
 		);
 
 		// If we hit and Actor and it implements our interface
-		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UCrosshairInteractiveInterface>())
+		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UBulletHitInterface>())
 		{
 			HUDPackage.CrosshairColor = FLinearColor::Red;
 		}
