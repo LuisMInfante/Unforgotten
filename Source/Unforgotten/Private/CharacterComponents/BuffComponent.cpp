@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UnforgottenCharacter.h"
 #include "CharacterComponents/BuffComponent.h"
+#include "UnforgottenCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties

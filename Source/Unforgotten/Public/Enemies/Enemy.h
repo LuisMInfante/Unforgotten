@@ -87,6 +87,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	float HitNumberDestroyTime;
+
+	UPROPERTY(EditAnywhere, Category = "Behavior Tree", meta = (AllowPrivateAccess = "true"))
+	class UBehaviorTree*  BehaviorTree;
+
 public:	
 
+	FORCEINLINE UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 };
