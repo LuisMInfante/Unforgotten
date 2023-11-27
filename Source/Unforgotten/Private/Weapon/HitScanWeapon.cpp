@@ -60,6 +60,8 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
                     UDamageType::StaticClass()
 				);
 		    }
+
+            HitEnemy->ShowHitNumber(Damage, FireHit.ImpactPoint);
         }
 
         if (ImpactParticles)

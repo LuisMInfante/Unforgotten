@@ -27,6 +27,8 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowHitNumber(int32 Damage, FVector HitLocation);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,6 +42,8 @@ protected:
 	void Die();
 
 	void PlayHitMontage(FName Section, float PlayRate = 1.0f);
+
+	void ResetHitReactTimer();
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
@@ -54,12 +58,22 @@ private:
 	float MaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	float HealthBarDisplayTime = 3.f;
+	float HealthBarDisplayTime;
 
 	FTimerHandle HealthBarTimer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* HitMontage;
+
+	FTimerHandle HitReactTimer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float HitReactTimeMin;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float HitReactTimeMax;
+
+	bool bCanHitReact;
+
 public:	
 
 };
