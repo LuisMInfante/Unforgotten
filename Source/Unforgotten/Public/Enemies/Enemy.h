@@ -29,6 +29,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowHitNumber(int32 Damage, FVector HitLocation);
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -52,6 +54,19 @@ protected:
 	void DestroyHitNumber(UUserWidget* HitNumber);
 
 	void UpdateHitNumbers();
+
+	UFUNCTION()
+	void AgroSphereOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
+
+	UFUNCTION(BlueprintCallable)
+	void SetStunned(bool Stunned);
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
@@ -96,8 +111,17 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Behavior Tree", meta = (AllowPrivateAccess = "true", MakeEditWidget = "true"))
 	FVector PatrolPoint2;
-	
+
 	class AEnemyController* EnemyController;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* AgroSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	bool bStunnned;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))	
+	float StunChance;
 public:	
 
 	FORCEINLINE UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }

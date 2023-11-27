@@ -9,6 +9,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Enemies/EnemyController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/SphereComponent.h"
+#include "UnforgottenCharacter.h"
 
 // Sets default values
 AEnemy::AEnemy() :
@@ -18,12 +20,16 @@ AEnemy::AEnemy() :
 	bCanHitReact(true),
 	HitReactTimeMin(0.5f),
 	HitReactTimeMax(3.0f),
-	HitNumberDestroyTime(1.5f)
+	HitNumberDestroyTime(1.5f),
+	bStunnned(false)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+
+	AgroSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AgroSphere"));
+	AgroSphere->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
@@ -31,6 +37,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	AgroSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::AgroSphereOverlap);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 
 	EnemyController = Cast<AEnemyController>(GetController());
@@ -65,6 +72,19 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::Die() 
 {
 	HideHealthBar();
+}
+
+void AEnemy::SetStunned(bool Stunned) 
+{
+	bStunnned = Stunned;
+
+	if (EnemyController)
+	{
+		EnemyController->GetBlackboardComponent()->SetValueAsBool(
+			TEXT("Stunned"),
+			Stunned
+		);
+	}
 }
 
 void AEnemy::PlayHitMontage(FName Section, float PlayRate) 
@@ -157,7 +177,12 @@ void AEnemy::BulletHit_Implementation(FHitResult HitResult)
 	}
 
 	ShowHealthBar();
-	PlayHitMontage(FName("HitReactFront"));
+	const float Stunned = FMath::FRandRange(0.f, 1.f);
+	if (Stunned <= StunChance)
+	{
+		PlayHitMontage(FName("HitReactFront"));
+		SetStunned(true);
+	}
 }
 
 float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, AController* EventInstigator, AActor* DamageCauser) 
@@ -184,4 +209,23 @@ void AEnemy::ShowHealthBar_Implementation()
 		&AEnemy::HideHealthBar,
 		HealthBarDisplayTime
 	);
+}
+
+void AEnemy::AgroSphereOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult) 
+{
+	if (!OtherActor) return;
+	AUnforgottenCharacter* Character = Cast<AUnforgottenCharacter>(OtherActor);
+
+	if (Character)
+	{
+		EnemyController->GetBlackboardComponent()->SetValueAsObject(
+			TEXT("Target"),
+			Character
+		);
+	}
 }
