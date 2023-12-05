@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Interfaces/CrosshairInteractiveInterface.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "CustomMovementComponent.h"
 #include "Unforgotten/Public/UnforgottenTypes/CombatState.h"
 #include "UnforgottenCharacter.generated.h"
 
@@ -56,7 +58,7 @@ class AUnforgottenCharacter : public ACharacter, public ICrosshairInteractiveInt
 	UInputAction* ReloadAction;
 	
 public:
-	AUnforgottenCharacter();
+	AUnforgottenCharacter(const class FObjectInitializer& ObjectInitializer);
 
 	virtual void PostInitializeComponents() override;
 
